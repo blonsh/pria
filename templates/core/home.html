@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}PRIA - Plataforma de Registro e Información Académica{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Bienvenida -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <h1 class="text-3xl font-bold text-primary mb-4">Bienvenido a PRIA</h1>
+        <p class="text-gray-600 mb-6">
+            Plataforma de Registro e Información Académica
+        </p>
+        <div class="mt-6">
+            <a href="{% url 'users:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors mr-4">
+                Gestión de Usuarios
+            </a>
+            <a href="{% url 'workcenter:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                Gestión del Centro de Trabajo
+            </a>
+        </div>
+    </div>
+
+    <!-- Tarjetas de información -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Tarjeta de Usuarios -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-primary mb-4">Gestión de Usuarios</h2>
+            <p class="text-gray-600 mb-6">
+                Gestiona los usuarios y roles del sistema
+            </p>
+            <a href="{% url 'users:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                Ir a Gestión de Usuarios
+            </a>
+        </div>
+
+        <!-- Tarjeta de Centro de Trabajo -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-primary mb-4">Centro de Trabajo</h2>
+            <p class="text-gray-600 mb-6">
+                Gestiona los recursos del centro educativo
+            </p>
+            <a href="{% url 'workcenter:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                Ir a Centro de Trabajo
+            </a>
+        </div>
+
+        <!-- Tarjeta de Ayuda -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-primary mb-4">Ayuda y Documentación</h2>
+            <p class="text-gray-600 mb-6">
+                Encuentra guías y documentación
+            </p>
+            <a href="{% url 'core:documentation' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                Ver Documentación
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

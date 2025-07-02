@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Gestión del Centro de Trabajo{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Tarjeta de Centros de Trabajo -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary">Centros de Trabajo</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600">Total: {{ work_centers.count }}</p>
+                <a href="{% url 'workcenter:workcenter_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    Nuevo Centro
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Director</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Control Escolar</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for workcenter in work_centers %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.address }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.director_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.school_control_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'workcenter:workcenter_update' workcenter.id %}" class="text-primary hover:text-primary-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Aulas -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary">Aulas</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600">Total: {{ classrooms.count }}</p>
+                <a href="{% url 'workcenter:classroom_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    Nueva Aula
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Centro</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacidad</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for classroom in classrooms %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.work_center.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.capacity }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'workcenter:classroom_update' classroom.id %}" class="text-primary hover:text-primary-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Ciclos Escolares -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary">Ciclos Escolares</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600">Total: {{ school_cycles.count }}</p>
+                <a href="{% url 'workcenter:schoolcycle_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    Nuevo Ciclo
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Centro</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fechas</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for cycle in school_cycles %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.work_center.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.start_date }} - {{ cycle.end_date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'workcenter:schoolcycle_update' cycle.id %}" class="text-primary hover:text-primary-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

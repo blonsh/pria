@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-primary mb-6">{{ title }}</h1>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">Nombre</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.director_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Nombre del Director</label>
+                    {{ form.director_name }}
+                    {% if form.director_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.director_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="col-span-2">
+                    <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700">Dirección</label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.address.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.school_control_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Nombre del Control Escolar</label>
+                    {{ form.school_control_name }}
+                    {% if form.school_control_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.school_control_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    {{ title }}
+                </button>
+                <a href="{% url 'workcenter:dashboard' %}" class="ml-4 text-primary hover:text-primary-700">
+                    Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

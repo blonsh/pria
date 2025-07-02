@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Tarjeta de Roles -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary">Roles</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600">Total de roles: {{ roles.count }}</p>
+                <a href="{% url 'users:role_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    Crear Rol
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for role in roles %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ role.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ role.description }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'users:role_update' role.id %}" class="text-primary hover:text-primary-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Usuarios -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary">Usuarios</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600">Total de usuarios: {{ users.count }}</p>
+                <a href="{% url 'users:user_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                    Crear Usuario
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for user in users %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.username }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.get_full_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.role.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{% url 'users:user_update' user.id %}" class="text-primary hover:text-primary-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
