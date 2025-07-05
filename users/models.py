@@ -27,6 +27,18 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('grupos'),
+        blank=True,
+        related_name='users_groups'
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('permisos'),
+        blank=True,
+        related_name='users_permissions'
+    )
     
     class Meta:
         verbose_name = _('usuario')

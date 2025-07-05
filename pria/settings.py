@@ -10,7 +10,20 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Optimización para desarrollo
+if DEBUG:
+    # Desactivar validación de contraseñas en desarrollo
+    AUTH_PASSWORD_VALIDATORS = []
+    
+    # Usar SQLite en desarrollo para mejor rendimiento
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,11 +32,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tailwind',
-    'theme',
-    'core.apps.CoreConfig',
-    'users.apps.UsersConfig',
-    'workcenter.apps.WorkcenterConfig',
+    'django.contrib.humanize',
+    'core',
+    'users',
+    'alumnos',
+    'docentes',
+    'asistencia',
+    'workcenter',
 ]
 
 MIDDLEWARE = [
@@ -58,12 +73,8 @@ WSGI_APPLICATION = 'pria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'pria'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -87,12 +98,17 @@ TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de autenticación
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [

@@ -10,9 +10,26 @@ class RoleForm(forms.ModelForm):
         required=False
     )
     
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'rows': 4,
+            'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm',
+            'placeholder': 'Describe las responsabilidades y funciones de este rol...'
+        }),
+        required=False,
+        max_length=1000,  # Aumentar el límite para permitir descripciones más largas
+        help_text='Describe las responsabilidades y funciones de este rol (máximo 1000 caracteres)'
+    )
+    
     class Meta:
         model = Role
         fields = ['name', 'description', 'permissions']
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description', '')
+        if description and len(description) > 1000:
+            raise forms.ValidationError('La descripción no puede superar los 1000 caracteres.')
+        return description
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(

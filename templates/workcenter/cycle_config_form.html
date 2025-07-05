@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ title }}</h1>
+        <p class="text-gray-600">Configura las opciones de activación de ciclos para {{ work_center.name }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulario -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow p-6">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Activación automática por fecha -->
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            {{ form.auto_activate_by_date }}
+                            <span class="ml-3 text-sm font-medium text-gray-900">
+                                {{ form.auto_activate_by_date.label }}
+                            </span>
+                        </label>
+                        {% if form.auto_activate_by_date.help_text %}
+                            <p class="text-sm text-gray-500">{{ form.auto_activate_by_date.help_text }}</p>
+                        {% endif %}
+                        {% if form.auto_activate_by_date.errors %}
+                            <div class="text-red-600 text-sm">
+                                {% for error in form.auto_activate_by_date.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Permitir múltiples ciclos activos -->
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            {{ form.allow_multiple_active }}
+                            <span class="ml-3 text-sm font-medium text-gray-900">
+                                {{ form.allow_multiple_active.label }}
+                            </span>
+                        </label>
+                        {% if form.allow_multiple_active.help_text %}
+                            <p class="text-sm text-gray-500">{{ form.allow_multiple_active.help_text }}</p>
+                        {% endif %}
+                        {% if form.allow_multiple_active.errors %}
+                            <div class="text-red-600 text-sm">
+                                {% for error in form.allow_multiple_active.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex justify-between pt-6">
+                        <a href="{% url 'workcenter:cycle_config_list' %}" 
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Cancelar
+                        </a>
+                        
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Guardar Configuración
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información del centro y ciclos activos -->
+        <div class="space-y-6">
+            <!-- Información del centro -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Centro de Trabajo</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Nombre</p>
+                        <p class="text-sm text-gray-900">{{ work_center.name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Director</p>
+                        <p class="text-sm text-gray-900">{{ work_center.director_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Control Escolar</p>
+                        <p class="text-sm text-gray-900">{{ work_center.school_control_name }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ciclos activos -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Ciclos Activos</h3>
+                {% if active_cycles %}
+                    <div class="space-y-3">
+                        {% for cycle in active_cycles %}
+                            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-green-900">{{ cycle.name }}</p>
+                                    <p class="text-xs text-green-600">
+                                        {{ cycle.start_date|date:"d/m/Y" }} - {{ cycle.end_date|date:"d/m/Y" }}
+                                    </p>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Activo
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">No hay ciclos activos</p>
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{% url 'workcenter:cycle_activation_management' work_center.id %}" 
+                       class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Gestionar Activación
+                    </a>
+                </div>
+            </div>
+
+            <!-- Configuración actual -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Configuración Actual</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">Activación automática</span>
+                        {% if config.auto_activate_by_date %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Habilitada
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Deshabilitada
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">Múltiples activos</span>
+                        {% if config.allow_multiple_active %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Permitido
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                No permitido
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

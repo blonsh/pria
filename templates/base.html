@@ -6,6 +6,8 @@
     <title>{% block title %}PRIA - Plataforma de Registro e Información Académica{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
@@ -29,6 +31,44 @@
         <aside class="w-64 bg-white border-r border-gray-200">
             <div class="p-4">
                 <h1 class="text-2xl font-bold text-primary">PRIA</h1>
+                
+                <!-- Language Selector -->
+                <div class="mt-4 mb-6">
+                    <div class="relative">
+                        <button type="button" 
+                                class="language-selector w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                onclick="toggleLanguageMenu()">
+                            <div class="flex items-center">
+                                <i class="fas fa-globe mr-2 text-primary"></i>
+                                <span id="current-language">Español</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Language Dropdown -->
+                        <div id="language-menu" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+                            <div class="py-1">
+                                <button type="button" 
+                                        class="language-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                                        onclick="selectLanguage('es', 'Español')">
+                                    <span class="mr-2">🇪🇸</span>
+                                    Español
+                                    <i class="fas fa-check ml-auto text-primary" id="check-es" style="display: inline;"></i>
+                                </button>
+                                <button type="button" 
+                                        class="language-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                                        onclick="selectLanguage('en', 'English')">
+                                    <span class="mr-2">🇺🇸</span>
+                                    English
+                                    <i class="fas fa-check ml-auto text-primary" id="check-en" style="display: none;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <nav class="mt-8">
                     <ul class="space-y-2">
                         <li>
@@ -59,6 +99,83 @@
             </div>
         </main>
     </div>
+
+    <script>
+        // Language selector functionality
+        function toggleLanguageMenu() {
+            const menu = document.getElementById('language-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function selectLanguage(code, name) {
+            // Update current language display
+            document.getElementById('current-language').textContent = name;
+            
+            // Update check marks
+            document.querySelectorAll('.language-option .fas.fa-check').forEach(check => {
+                check.style.display = 'none';
+            });
+            document.getElementById(`check-${code}`).style.display = 'inline';
+            
+            // Hide menu
+            document.getElementById('language-menu').classList.add('hidden');
+            
+            // Store language preference
+            localStorage.setItem('selectedLanguage', code);
+            
+            // Show notification
+            showLanguageNotification(name);
+        }
+
+        function showLanguageNotification(languageName) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>Idioma cambiado a: ${languageName}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize language selector
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                if (savedLanguage === 'en') {
+                    selectLanguage('en', 'English');
+                } else {
+                    selectLanguage('es', 'Español');
+                }
+            }
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const selector = document.querySelector('.language-selector');
+                const menu = document.getElementById('language-menu');
+                
+                if (!selector.contains(event.target) && !menu.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

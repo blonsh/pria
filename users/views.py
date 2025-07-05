@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from .models import Role, User
 from .forms import RoleForm, UserForm
 
@@ -27,6 +29,128 @@ def dashboard(request):
 
 # Funciones de gestión de roles
 
+def get_permissions_by_module():
+    """
+    Agrupa los permisos por módulo/tipo de contenido para mostrar en pestañas.
+    Los permisos de autenticación y núcleo se agrupan juntos, otros módulos se mantienen separados.
+    
+    Returns:
+        dict: Diccionario con permisos agrupados por módulo
+    """
+    permissions = Permission.objects.select_related('content_type').all()
+    
+    # Agrupar permisos por content_type
+    permissions_by_module = {}
+    
+    # Diccionario de traducciones de módulos
+    module_translations = {
+        'admin': 'Administración',
+        'auth': 'Autenticación',
+        'contenttypes': 'Tipos de Contenido',
+        'sessions': 'Sesiones',
+        'core': 'Núcleo',
+        'users': 'Usuarios',
+        'alumnos': 'Alumnos',
+        'docentes': 'Docentes',
+        'asistencia': 'Asistencia',
+        'workcenter': 'Centro de Trabajo'
+    }
+    
+    # Diccionario de traducciones de modelos
+    model_translations = {
+        # Admin
+        'logentry': 'Entrada de Log',
+        
+        # Auth
+        'group': 'Grupo',
+        'permission': 'Permiso',
+        'user': 'Usuario',
+        
+        # Contenttypes
+        'contenttype': 'Tipo de Contenido',
+        
+        # Sessions
+        'session': 'Sesión',
+        
+        # Core
+        'carrera': 'Carrera',
+        'userprofile': 'Perfil de Usuario',
+        'materia': 'Materia',
+        'docente': 'Docente',
+        'curso': 'Curso',
+        'alumno': 'Alumno',
+        'matricula': 'Matrícula',
+        
+        # Users
+        'role': 'Rol',
+        
+        # Alumnos
+        'alumno': 'Alumno',
+        
+        # Docentes
+        'docente': 'Docente',
+        
+        # Asistencia
+        'asistencia': 'Asistencia',
+        
+        # Workcenter
+        'schoolcycle': 'Ciclo Escolar',
+        'workcenter': 'Centro de Trabajo',
+        'schoolperiod': 'Período Escolar',
+        'classroom': 'Aula',
+        'schoolcycleconfig': 'Configuración de Ciclo'
+    }
+    
+    for permission in permissions:
+        content_type = permission.content_type
+        app_label = content_type.app_label
+        model_name = content_type.model
+        
+        # Crear nombre legible del módulo en español
+        module_name = module_translations.get(app_label, app_label.replace('_', ' ').title())
+        
+        # Crear nombre legible del modelo en español
+        model_display_name = model_translations.get(model_name, model_name.replace('_', ' ').title())
+        
+        # Lógica de agrupación: autenticación, núcleo y workcenter se agrupan, otros se mantienen separados
+        if app_label == 'auth':
+            # Agrupar todos los permisos de autenticación juntos
+            module_key = 'auth_combined'
+            module_name = 'Autenticación'
+            model_display_name = 'Grupo, Permiso, Usuario'
+        elif app_label == 'core':
+            # Agrupar todos los permisos del núcleo juntos
+            module_key = 'core_combined'
+            module_name = 'Núcleo'
+            model_display_name = 'Carrera, Perfil de Usuario, Materia, Docente, Curso, Alumno, Matrícula'
+        elif app_label == 'workcenter':
+            # Agrupar todos los permisos de workcenter juntos
+            module_key = 'workcenter_combined'
+            module_name = 'Centro de Trabajo'
+            model_display_name = 'Aula, Ciclo Escolar, Configuración de Ciclo, Período Escolar, Centro de Trabajo'
+        elif app_label == 'users':
+            # Agrupar todos los permisos de users juntos
+            module_key = 'users_combined'
+            module_name = 'Usuarios'
+            model_display_name = 'Rol, Usuario'
+        else:
+            # Mantener otros módulos separados por modelo
+            module_key = f"{app_label}_{model_name}"
+        
+        if module_key not in permissions_by_module:
+            permissions_by_module[module_key] = {
+                'module_name': module_name,
+                'model_name': model_display_name,
+                'app_label': app_label,
+                'content_type': content_type,
+                'permissions': []
+            }
+        
+        permissions_by_module[module_key]['permissions'].append(permission)
+    
+    # Ordenar por nombre del módulo
+    return dict(sorted(permissions_by_module.items(), key=lambda x: x[1]['module_name']))
+
 @login_required
 def role_create(request):
     """
@@ -47,9 +171,14 @@ def role_create(request):
             return redirect('users:dashboard')
     else:
         form = RoleForm()
+    
+    # Obtener permisos agrupados por módulo
+    permissions_by_module = get_permissions_by_module()
+    
     return render(request, 'users/role_form.html', {
         'form': form,
-        'title': 'Crear Rol'
+        'title': 'Crear Rol',
+        'permissions_by_module': permissions_by_module
     })
 
 @login_required
@@ -73,9 +202,15 @@ def role_update(request, pk):
             return redirect('users:dashboard')
     else:
         form = RoleForm(instance=role)
+    
+    # Obtener permisos agrupados por módulo
+    permissions_by_module = get_permissions_by_module()
+    
     return render(request, 'users/role_form.html', {
         'form': form,
-        'title': 'Actualizar Rol'
+        'title': 'Actualizar Rol',
+        'role': role,
+        'permissions_by_module': permissions_by_module
     })
 
 # Funciones de gestión de usuarios

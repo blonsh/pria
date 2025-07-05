@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Estadísticas de Asistencia</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold mb-4">Últimos 7 días</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for estado, total in estadisticas %}
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-gray-600 mb-2">{{ estado.get_estado_display }}</h3>
+                    <p class="text-2xl font-bold text-blue-600">{{ total }}</p>
+                    <p class="text-sm text-gray-600">{{ porcentajes|get_item:estado.get_estado_display|floatformat:"1" }}%</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Agregar el filtro get_item para acceder a diccionarios en Django templates
+    if (!Array.prototype.get_item) {
+        Array.prototype.get_item = function(key) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i][0] === key) return this[i][1];
+            }
+            return null;
+        };
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrar Asistencia - PRIA{% endblock %}
+
+{% block extra_css %}
+<style>
+    .date-input {
+        background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3ccircle cx="12" cy="12" r="10"%3e%3c/circle%3e%3cpolyline points="12 6 12 12 16 14"%3e%3c/polyline%3e%3c/svg%3e');
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.5rem;
+        padding-right: 3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow rounded-lg p-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Registrar Asistencia</h1>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Alumno -->
+            <div>
+                <label for="{{ form.alumno.id_for_label }}" class="block text-sm font-medium text-gray-700">Alumno</label>
+                {{ form.alumno }}
+                {% if form.alumno.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.alumno.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Fecha -->
+            <div>
+                <label for="{{ form.fecha.id_for_label }}" class="block text-sm font-medium text-gray-700">Fecha</label>
+                <input type="date" 
+                       id="{{ form.fecha.id_for_label }}" 
+                       name="{{ form.fecha.html_name }}"
+                       class="date-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                {% if form.fecha.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.fecha.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Estado -->
+            <div>
+                <label for="{{ form.estado.id_for_label }}" class="block text-sm font-medium text-gray-700">Estado</label>
+                {{ form.estado }}
+                {% if form.estado.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.estado.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Hora de entrada -->
+            <div>
+                <label for="{{ form.hora_entrada.id_for_label }}" class="block text-sm font-medium text-gray-700">Hora de entrada</label>
+                <input type="time" 
+                       id="{{ form.hora_entrada.id_for_label }}" 
+                       name="{{ form.hora_entrada.html_name }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                {% if form.hora_entrada.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.hora_entrada.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Hora de salida -->
+            <div>
+                <label for="{{ form.hora_salida.id_for_label }}" class="block text-sm font-medium text-gray-700">Hora de salida</label>
+                <input type="time" 
+                       id="{{ form.hora_salida.id_for_label }}" 
+                       name="{{ form.hora_salida.html_name }}"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                {% if form.hora_salida.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.hora_salida.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Docente -->
+            <div>
+                <label for="{{ form.docente.id_for_label }}" class="block text-sm font-medium text-gray-700">Docente</label>
+                {{ form.docente }}
+                {% if form.docente.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.docente.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Registrar
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

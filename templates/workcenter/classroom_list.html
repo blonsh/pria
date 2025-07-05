@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Aulas - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Lista de Aulas</h1>
+                <p class="text-gray-600">Gestiona todas las aulas del sistema educativo</p>
+            </div>
+            <a href="{% url 'workcenter:classroom_create' %}" 
+               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Nueva Aula
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-green-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-green-600">{{ total_classrooms }}</div>
+            <div class="text-sm text-gray-600">Total de Aulas</div>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-blue-600">{{ total_capacity }}</div>
+            <div class="text-sm text-gray-600">Capacidad Total</div>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-purple-600">{{ avg_capacity }}</div>
+            <div class="text-sm text-gray-600">Capacidad Promedio</div>
+        </div>
+    </div>
+
+    <!-- Lista de aulas -->
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">
+                <i class="fas fa-chalkboard-teacher text-green-600 mr-2"></i>
+                Aulas Registradas
+            </h2>
+        </div>
+        
+        <div class="p-6">
+            {% if classrooms %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for classroom in classrooms %}
+                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ classroom.name }}</h3>
+                                <p class="text-sm text-gray-600">{{ classroom.work_center.name }}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="{% url 'workcenter:classroom_update' classroom.pk %}" 
+                                   class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users mr-2 text-green-600"></i>
+                                <span>Capacidad: {{ classroom.capacity }} alumnos</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-building mr-2 text-blue-600"></i>
+                                <span>{{ classroom.work_center.director_name }}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
+                                <span class="truncate">{{ classroom.work_center.address }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">ID: {{ classroom.pk }}</span>
+                                <a href="{% url 'workcenter:workcenter_detail' classroom.work_center.pk %}" 
+                                   class="text-green-600 hover:text-green-800 text-sm">
+                                    Ver centro <i class="fas fa-external-link-alt ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación simple -->
+                {% if classrooms|length > 12 %}
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600">Mostrando {{ classrooms|length }} aulas</p>
+                </div>
+                {% endif %}
+                
+            {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-chalkboard-teacher text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay aulas registradas</h3>
+                    <p class="text-gray-600 mb-6">Comienza creando la primera aula del sistema</p>
+                    <a href="{% url 'workcenter:classroom_create' %}" 
+                       class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Crear Primera Aula
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Acciones adicionales -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{% url 'workcenter:dashboard' %}" 
+               class="bg-gray-600 text-white p-4 rounded-lg hover:bg-gray-700 transition-colors text-center">
+                <i class="fas fa-tachometer-alt text-2xl mb-2"></i>
+                <div class="font-semibold">Dashboard</div>
+                <div class="text-sm opacity-90">Volver al panel principal</div>
+            </a>
+            <a href="{% url 'workcenter:workcenter_list' %}" 
+               class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors text-center">
+                <i class="fas fa-building text-2xl mb-2"></i>
+                <div class="font-semibold">Centros de Trabajo</div>
+                <div class="text-sm opacity-90">Ver todos los centros</div>
+            </a>
+            <a href="{% url 'workcenter:classroom_create' %}" 
+               class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-center">
+                <i class="fas fa-plus text-2xl mb-2"></i>
+                <div class="font-semibold">Nueva Aula</div>
+                <div class="text-sm opacity-90">Crear aula adicional</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

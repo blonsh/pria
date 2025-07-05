@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+
 class Docente(models.Model):
     """
     Modelo que representa un docente.
@@ -9,7 +10,8 @@ class Docente(models.Model):
     user = models.OneToOneField(
         User,
         verbose_name=_('usuario'),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='docentes_docente'
     )
     especialidad = models.CharField(_('especialidad'), max_length=255)
     fecha_contratacion = models.DateField(_('fecha de contratación'))
@@ -22,8 +24,3 @@ class Docente(models.Model):
         
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
-
-class DocenteAdmin(models.ModelAdmin):
-    list_display = ('user', 'especialidad', 'fecha_contratacion')
-    list_filter = ('especialidad',)
-    search_fields = ('user__first_name', 'user__last_name')

@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Panel de administración{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Tarjeta de Alumnos -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold mb-4">Alumnos</h3>
+        <div class="space-y-4">
+            <p>Total de alumnos: {{ alumnos_count }}</p>
+            <a href="{% url 'core:register_alumno' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Registrar nuevo alumno</a>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Docentes -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold mb-4">Docentes</h3>
+        <div class="space-y-4">
+            <p>Total de docentes: {{ docentes_count }}</p>
+            <a href="{% url 'core:register_docente' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Registrar nuevo docente</a>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Carreras -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold mb-4">Carreras</h3>
+        <div class="space-y-4">
+            <p>Total de carreras: {{ carreras_count }}</p>
+            <a href="{% url 'core:register_carrera' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Registrar nueva carrera</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

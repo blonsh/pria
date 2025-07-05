@@ -1,5 +1,5 @@
 from django import forms
-from .models import WorkCenter, Classroom, SchoolCycle, SchoolPeriod
+from .models import WorkCenter, Classroom, SchoolCycle, SchoolPeriod, SchoolCycleConfig
 
 class WorkCenterForm(forms.ModelForm):
     class Meta:
@@ -14,7 +14,20 @@ class ClassroomForm(forms.ModelForm):
 class SchoolCycleForm(forms.ModelForm):
     class Meta:
         model = SchoolCycle
-        fields = ['work_center', 'name', 'start_date', 'end_date']
+        fields = ['work_center', 'name', 'start_date', 'end_date', 'is_active']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class SchoolCycleConfigForm(forms.ModelForm):
+    class Meta:
+        model = SchoolCycleConfig
+        fields = ['allow_multiple_active', 'auto_activate_by_date']
+        widgets = {
+            'allow_multiple_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'auto_activate_by_date': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
 
 class SchoolPeriodForm(forms.ModelForm):
     class Meta:

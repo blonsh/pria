@@ -2,55 +2,375 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold text-primary mb-6">{{ title }}</h1>
-    
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ title }}</h1>
+        <p class="text-gray-600">Configura los permisos del rol organizados por módulos</p>
+    </div>
+
     <form method="post" class="space-y-6">
         {% csrf_token %}
         
-        <div class="bg-white shadow rounded-lg p-6">
-            <div class="space-y-4">
+        <!-- Información básica del rol -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Información del Rol</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">Nombre</label>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nombre del Rol
+                    </label>
                     {{ form.name }}
                     {% if form.name.errors %}
                         <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
                     {% endif %}
                 </div>
                 
-                <div>
-                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">Descripción</label>
-                    {{ form.description }}
+                <div class="md:col-span-2">
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Descripción
+                    </label>
+                    <div class="relative">
+                        {{ form.description }}
+                        <div class="mt-1 flex justify-between items-center">
+                            <div class="text-xs text-gray-500">
+                                <span id="char-count">0</span> / 1000 caracteres
+                            </div>
+                            <div class="text-xs">
+                                <span id="char-status" class="text-green-600">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
                     {% if form.description.errors %}
                         <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
                     {% endif %}
                 </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Permisos</label>
-                    <div class="mt-2 space-y-2">
-                        {% for checkbox in form.permissions %}
-                        <div class="flex items-center">
-                            {{ checkbox.tag }}
-                            <label for="{{ checkbox.id_for_label }}" class="ml-2 block text-sm text-gray-700">{{ checkbox.choice_label }}</label>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% if form.permissions.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.permissions.errors.0 }}</p>
-                    {% endif %}
-                </div>
+            </div>
+        </div>
+
+        <!-- Permisos organizados en acordeón -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Permisos por Módulo</h2>
+                <p class="text-sm text-gray-600 mt-1">Expande cada módulo para configurar sus permisos</p>
             </div>
             
-            <div class="mt-6">
-                <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    {{ title }}
-                </button>
-                <a href="{% url 'users:dashboard' %}" class="ml-4 text-primary hover:text-primary-700">
-                    Cancelar
-                </a>
+            <!-- Acordeón de permisos -->
+            <div class="divide-y divide-gray-200">
+                {% for module_key, module_data in permissions_by_module.items %}
+                <div class="accordion-item">
+                    <!-- Header del acordeón -->
+                    <button type="button" 
+                            class="accordion-header w-full px-6 py-4 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200"
+                            onclick="toggleAccordion('{{ module_key }}')"
+                            aria-expanded="false"
+                            aria-controls="accordion-{{ module_key }}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-cube text-blue-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">{{ module_data.module_name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ module_data.model_name }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-500 mr-3">
+                                    <span class="selected-count-{{ module_key }}">0</span> seleccionados
+                                </span>
+                                <svg class="accordion-icon w-5 h-5 text-gray-400 transform transition-transform duration-200" 
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <!-- Contenido del acordeón -->
+                    <div id="accordion-{{ module_key }}" 
+                         class="accordion-content hidden overflow-hidden transition-all duration-300 ease-in-out">
+                        <div class="px-6 pb-6">
+                            <div class="mb-4">
+                                <h4 class="text-md font-medium text-gray-900 mb-2">Permisos disponibles</h4>
+                                <p class="text-sm text-gray-600">Selecciona los permisos que tendrá este rol para {{ module_data.module_name }}</p>
+                            </div>
+                            
+                            <!-- Grid de permisos -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {% for permission in module_data.permissions %}
+                                <label class="permission-item flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200 hover:shadow-sm">
+                                    <input type="checkbox" 
+                                           name="permissions" 
+                                           value="{{ permission.id }}"
+                                           data-module="{{ module_key }}"
+                                           {% if permission.id in form.permissions.value %}checked{% endif %}
+                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors">
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex items-center">
+                                            {% if permission.codename == 'add' %}
+                                                <i class="fas fa-plus text-green-600 mr-2"></i>
+                                                <span class="text-sm font-medium text-gray-900">Crear</span>
+                                            {% elif permission.codename == 'change' %}
+                                                <i class="fas fa-edit text-blue-600 mr-2"></i>
+                                                <span class="text-sm font-medium text-gray-900">Editar</span>
+                                            {% elif permission.codename == 'delete' %}
+                                                <i class="fas fa-trash text-red-600 mr-2"></i>
+                                                <span class="text-sm font-medium text-gray-900">Eliminar</span>
+                                            {% elif permission.codename == 'view' %}
+                                                <i class="fas fa-eye text-purple-600 mr-2"></i>
+                                                <span class="text-sm font-medium text-gray-900">Ver</span>
+                                            {% else %}
+                                                <i class="fas fa-cog text-gray-600 mr-2"></i>
+                                                <span class="text-sm font-medium text-gray-900">{{ permission.codename|title }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-1">{{ permission.name }}</div>
+                                    </div>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Acciones rápidas del módulo -->
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" 
+                                            onclick="selectAllPermissions('{{ module_key }}')"
+                                            class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-check-double mr-1"></i>
+                                        Seleccionar todos
+                                    </button>
+                                    <button type="button" 
+                                            onclick="deselectAllPermissions('{{ module_key }}')"
+                                            class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-times mr-1"></i>
+                                        Deseleccionar todos
+                                    </button>
+                                    <button type="button" 
+                                            onclick="selectCommonPermissions('{{ module_key }}')"
+                                            class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-eye mr-1"></i>
+                                        Solo ver
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
+        </div>
+
+        <!-- Resumen de permisos seleccionados -->
+        <div class="bg-blue-50 rounded-lg p-4">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+                <div>
+                    <h3 class="text-sm font-medium text-blue-900">Resumen de permisos</h3>
+                    <p class="text-sm text-blue-700">
+                        Total seleccionados: <span id="total-selected" class="font-semibold">0</span> permisos
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex justify-between items-center">
+            <a href="{% url 'users:dashboard' %}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Cancelar
+            </a>
+            
+            <button type="submit" 
+                    class="inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                {{ title }}
+            </button>
         </div>
     </form>
 </div>
+
+<script>
+// Función para alternar el acordeón
+function toggleAccordion(moduleKey) {
+    const content = document.getElementById('accordion-' + moduleKey);
+    const button = content.previousElementSibling;
+    const icon = button.querySelector('.accordion-icon');
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    
+    // Toggle del contenido
+    if (isExpanded) {
+        content.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+        icon.classList.remove('rotate-180');
+    } else {
+        content.classList.remove('hidden');
+        button.setAttribute('aria-expanded', 'true');
+        icon.classList.add('rotate-180');
+    }
+}
+
+// Función para actualizar contadores
+function updateCounters() {
+    const modules = document.querySelectorAll('[data-module]');
+    const moduleCounts = {};
+    
+    // Contar permisos seleccionados por módulo
+    modules.forEach(checkbox => {
+        const moduleKey = checkbox.getAttribute('data-module');
+        if (!moduleCounts[moduleKey]) {
+            moduleCounts[moduleKey] = 0;
+        }
+        if (checkbox.checked) {
+            moduleCounts[moduleKey]++;
+        }
+    });
+    
+    // Actualizar contadores en los headers
+    Object.keys(moduleCounts).forEach(moduleKey => {
+        const counter = document.querySelector('.selected-count-' + moduleKey);
+        if (counter) {
+            counter.textContent = moduleCounts[moduleKey];
+        }
+    });
+    
+    // Actualizar total
+    const total = Object.values(moduleCounts).reduce((sum, count) => sum + count, 0);
+    document.getElementById('total-selected').textContent = total;
+}
+
+// Funciones para selección masiva
+function selectAllPermissions(moduleKey) {
+    const checkboxes = document.querySelectorAll(`[data-module="${moduleKey}"]`);
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateCounters();
+}
+
+function deselectAllPermissions(moduleKey) {
+    const checkboxes = document.querySelectorAll(`[data-module="${moduleKey}"]`);
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateCounters();
+}
+
+function selectCommonPermissions(moduleKey) {
+    const checkboxes = document.querySelectorAll(`[data-module="${moduleKey}"]`);
+    checkboxes.forEach(checkbox => {
+        // Solo seleccionar permisos de "view"
+        if (checkbox.closest('label').textContent.includes('Ver')) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+    });
+    updateCounters();
+}
+
+// Contador de caracteres para descripción
+function updateCharCount() {
+    const descriptionField = document.getElementById('{{ form.description.id_for_label }}');
+    const charCount = document.getElementById('char-count');
+    const charStatus = document.getElementById('char-status');
+    
+    if (descriptionField && charCount && charStatus) {
+        const currentLength = descriptionField.value.length;
+        const maxLength = 1000;
+        
+        charCount.textContent = currentLength;
+        
+        // Actualizar estado visual
+        if (currentLength === 0) {
+            charStatus.textContent = '✓ Disponible';
+            charStatus.className = 'text-xs text-green-600';
+        } else if (currentLength <= maxLength * 0.8) {
+            charStatus.textContent = '✓ Disponible';
+            charStatus.className = 'text-xs text-green-600';
+        } else if (currentLength <= maxLength * 0.95) {
+            charStatus.textContent = '⚠ Cuidado';
+            charStatus.className = 'text-xs text-yellow-600';
+        } else if (currentLength <= maxLength) {
+            charStatus.textContent = '⚠ Casi lleno';
+            charStatus.className = 'text-xs text-orange-600';
+        } else {
+            charStatus.textContent = '✗ Excedido';
+            charStatus.className = 'text-xs text-red-600';
+        }
+    }
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar contadores al cargar
+    updateCounters();
+    
+    // Escuchar cambios en checkboxes
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateCounters);
+    });
+    
+    // Escuchar cambios en el campo descripción
+    const descriptionField = document.getElementById('{{ form.description.id_for_label }}');
+    if (descriptionField) {
+        descriptionField.addEventListener('input', updateCharCount);
+        descriptionField.addEventListener('keyup', updateCharCount);
+        updateCharCount(); // Inicializar contador
+    }
+    
+    // Expandir el primer acordeón por defecto
+    const firstAccordion = document.querySelector('.accordion-item');
+    if (firstAccordion) {
+        const moduleKey = firstAccordion.querySelector('[data-module]').getAttribute('data-module');
+        toggleAccordion(moduleKey);
+    }
+});
+</script>
+
+<style>
+.accordion-header {
+    transition: all 0.2s ease-in-out;
+}
+
+.accordion-header:hover {
+    background-color: #f9fafb;
+}
+
+.accordion-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+    }
+}
+
+.permission-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.permission-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.accordion-icon {
+    transition: transform 0.2s ease-in-out;
+}
+</style>
 {% endblock %}

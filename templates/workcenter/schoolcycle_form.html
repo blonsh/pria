@@ -2,56 +2,168 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold text-primary mb-6">{{ title }}</h1>
-    
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        
-        <div class="bg-white shadow rounded-lg p-6">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">
+                    <i class="fas fa-calendar-alt text-purple-600 mr-3"></i>
+                    {{ title }}
+                </h1>
+                <p class="mt-2 text-gray-600">
+                    {% if is_update %}
+                        Actualiza la información del ciclo escolar
+                    {% else %}
+                        Crea un nuevo ciclo escolar en el sistema
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'workcenter:schoolcycle_list' %}" 
+               class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Volver a la Lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Mensajes de error/éxito -->
+    {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+                <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-200{% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200{% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                    <div class="flex items-center">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} mr-2"></i>
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulario -->
+    <div class="bg-white rounded-lg shadow-md">
+        <form method="post" class="p-6">
+            {% csrf_token %}
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="{{ form.work_center.id_for_label }}" class="block text-sm font-medium text-gray-700">Centro de Trabajo</label>
+                <!-- Centro de Trabajo -->
+                <div class="md:col-span-2">
+                    <label for="{{ form.work_center.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-building mr-1"></i>Centro de Trabajo
+                    </label>
                     {{ form.work_center }}
                     {% if form.work_center.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.work_center.errors.0 }}</p>
+                        <p class="mt-1 text-sm text-red-600">
+                            <i class="fas fa-exclamation-circle mr-1"></i>{{ form.work_center.errors.0 }}
+                        </p>
                     {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Selecciona el centro de trabajo al que pertenece este ciclo</p>
                 </div>
                 
-                <div>
-                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">Nombre</label>
+                <!-- Nombre del Ciclo -->
+                <div class="md:col-span-2">
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-tag mr-1"></i>Nombre del Ciclo Escolar
+                    </label>
                     {{ form.name }}
                     {% if form.name.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                        <p class="mt-1 text-sm text-red-600">
+                            <i class="fas fa-exclamation-circle mr-1"></i>{{ form.name.errors.0 }}
+                        </p>
                     {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Ej: Ciclo Escolar 2024-2025</p>
                 </div>
                 
+                <!-- Fecha de Inicio -->
                 <div>
-                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
+                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar-plus mr-1"></i>Fecha de Inicio
+                    </label>
                     {{ form.start_date }}
                     {% if form.start_date.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.start_date.errors.0 }}</p>
+                        <p class="mt-1 text-sm text-red-600">
+                            <i class="fas fa-exclamation-circle mr-1"></i>{{ form.start_date.errors.0 }}
+                        </p>
                     {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Fecha en que inicia el ciclo escolar</p>
                 </div>
                 
+                <!-- Fecha de Fin -->
                 <div>
-                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Fecha de fin</label>
+                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar-minus mr-1"></i>Fecha de Fin
+                    </label>
                     {{ form.end_date }}
                     {% if form.end_date.errors %}
-                        <p class="mt-1 text-sm text-red-600">{{ form.end_date.errors.0 }}</p>
+                        <p class="mt-1 text-sm text-red-600">
+                            <i class="fas fa-exclamation-circle mr-1"></i>{{ form.end_date.errors.0 }}
+                        </p>
                     {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Fecha en que termina el ciclo escolar</p>
                 </div>
             </div>
             
-            <div class="mt-6">
-                <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    {{ title }}
+            <!-- Información adicional si es edición -->
+            {% if is_update and schoolcycle %}
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 class="text-sm font-medium text-blue-900 mb-2">
+                    <i class="fas fa-info-circle mr-1"></i>Información del Ciclo
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <span class="font-medium text-gray-700">Centro:</span>
+                        <span class="text-gray-600">{{ schoolcycle.work_center.name }}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Duración:</span>
+                        <span class="text-gray-600">{{ duration_days }} días</span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Estado:</span>
+                        {% if schoolcycle.start_date <= today and schoolcycle.end_date >= today %}
+                            <span class="text-green-600 font-medium">Activo</span>
+                        {% elif schoolcycle.start_date > today %}
+                            <span class="text-blue-600 font-medium">Próximo</span>
+                        {% else %}
+                            <span class="text-gray-600 font-medium">Finalizado</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Botones de acción -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                <button type="submit" class="flex-1 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                    <i class="fas fa-save mr-2"></i>
+                    {% if is_update %}Actualizar Ciclo{% else %}Crear Ciclo{% endif %}
                 </button>
-                <a href="{% url 'workcenter:dashboard' %}" class="ml-4 text-primary hover:text-primary-700">
-                    Cancelar
+                
+                <a href="{% url 'workcenter:schoolcycle_list' %}" 
+                   class="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium text-center">
+                    <i class="fas fa-times mr-2"></i>Cancelar
                 </a>
             </div>
+        </form>
+    </div>
+
+    <!-- Navegación adicional -->
+    <div class="mt-8 flex justify-between items-center">
+        <a href="{% url 'workcenter:dashboard' %}" 
+           class="text-gray-600 hover:text-gray-900">
+            <i class="fas fa-home mr-2"></i>Dashboard
+        </a>
+        
+        <div class="flex space-x-4">
+            <a href="{% url 'workcenter:workcenter_list' %}" 
+               class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-building mr-1"></i>Centros
+            </a>
+            <a href="{% url 'workcenter:classroom_list' %}" 
+               class="text-green-600 hover:text-green-800">
+                <i class="fas fa-chalkboard-teacher mr-1"></i>Aulas
+            </a>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

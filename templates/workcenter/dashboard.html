@@ -1,130 +1,240 @@
 {% extends 'base.html' %}
-{% block title %}Gestión del Centro de Trabajo{% endblock %}
+{% block title %}Dashboard - Centros de Trabajo - PRIA{% endblock %}
 
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Tarjeta de Centros de Trabajo -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold mb-4 text-primary">Centros de Trabajo</h2>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <p class="text-gray-600">Total: {{ work_centers.count }}</p>
-                <a href="{% url 'workcenter:workcenter_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    Nuevo Centro
-                </a>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard de Centros de Trabajo</h1>
+        <p class="text-gray-600">Gestiona centros de trabajo, aulas y ciclos escolares</p>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-blue-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-blue-600">{{ total_workcenters }}</div>
+            <div class="text-sm text-gray-600">Centros de Trabajo</div>
+        </div>
+        <div class="bg-green-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-green-600">{{ total_classrooms }}</div>
+            <div class="text-sm text-gray-600">Aulas</div>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-purple-600">{{ total_school_cycles }}</div>
+            <div class="text-sm text-gray-600">Ciclos Escolares</div>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-orange-600">{{ total_school_periods }}</div>
+            <div class="text-sm text-gray-600">Periodos Escolares</div>
+        </div>
+    </div>
+
+    <!-- Contenido principal en columnas horizontales -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Columna 1: Centros de Trabajo -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        <i class="fas fa-building text-blue-600 mr-2"></i>
+                        Centros de Trabajo
+                    </h2>
+                    <a href="{% url 'workcenter:workcenter_create' %}" 
+                       class="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        <i class="fas fa-plus mr-1"></i>Nuevo
+                    </a>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Director</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Control Escolar</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for workcenter in work_centers %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.address }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.director_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ workcenter.school_control_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{% url 'workcenter:workcenter_update' workcenter.id %}" class="text-primary hover:text-primary-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>
+            
+            <div class="p-6">
+                {% if recent_workcenters %}
+                    <div class="space-y-4">
+                        {% for workcenter in recent_workcenters %}
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ workcenter.name }}</h3>
+                                    <p class="text-sm text-gray-600">{{ workcenter.director_name }}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'workcenter:workcenter_detail' workcenter.pk %}" 
+                                       class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'workcenter:workcenter_update' workcenter.pk %}" 
+                                       class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'workcenter:workcenter_list' %}" 
+                           class="text-blue-600 hover:text-blue-800 text-sm">
+                            Ver todos los centros <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-building text-4xl mb-4"></i>
+                        <p>No hay centros de trabajo registrados.</p>
+                        <a href="{% url 'workcenter:workcenter_create' %}" 
+                           class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Crear Primer Centro
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Columna 2: Aulas -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        <i class="fas fa-chalkboard-teacher text-green-600 mr-2"></i>
+                        Aulas
+                    </h2>
+                    <a href="{% url 'workcenter:classroom_create' %}" 
+                       class="bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                        <i class="fas fa-plus mr-1"></i>Nueva
+                    </a>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                {% if recent_classrooms %}
+                    <div class="space-y-4">
+                        {% for classroom in recent_classrooms %}
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ classroom.name }}</h3>
+                                    <p class="text-sm text-gray-600">{{ classroom.work_center.name }}</p>
+                                    <p class="text-xs text-gray-500">Capacidad: {{ classroom.capacity }} alumnos</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'workcenter:classroom_update' classroom.pk %}" 
+                                       class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'workcenter:classroom_list' %}" class="text-green-600 hover:text-green-800 text-sm">
+                            Ver todas las aulas <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-chalkboard-teacher text-4xl mb-4"></i>
+                        <p>No hay aulas registradas.</p>
+                        <a href="{% url 'workcenter:classroom_create' %}" 
+                           class="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Crear Primera Aula
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Columna 3: Ciclos Escolares -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                        Ciclos Escolares
+                    </h2>
+                    <a href="{% url 'workcenter:schoolcycle_create' %}" 
+                       class="bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 transition-colors text-sm">
+                        <i class="fas fa-plus mr-1"></i>Nuevo
+                    </a>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                {% if recent_school_cycles %}
+                    <div class="space-y-4">
+                        {% for cycle in recent_school_cycles %}
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ cycle.name }}</h3>
+                                    <p class="text-sm text-gray-600">{{ cycle.work_center.name }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ cycle.start_date|date:"d/m/Y" }} - {{ cycle.end_date|date:"d/m/Y" }}
+                                    </p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'workcenter:schoolcycle_update' cycle.pk %}" 
+                                       class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'workcenter:schoolcycle_list' %}" class="text-purple-600 hover:text-purple-800 text-sm">
+                            Ver todos los ciclos <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                        <p>No hay ciclos escolares registrados.</p>
+                        <a href="{% url 'workcenter:schoolcycle_create' %}" 
+                           class="mt-4 inline-block bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                            Crear Primer Ciclo
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Tarjeta de Aulas -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold mb-4 text-primary">Aulas</h2>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <p class="text-gray-600">Total: {{ classrooms.count }}</p>
-                <a href="{% url 'workcenter:classroom_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    Nueva Aula
-                </a>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Centro</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacidad</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for classroom in classrooms %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.work_center.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ classroom.capacity }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{% url 'workcenter:classroom_update' classroom.id %}" class="text-primary hover:text-primary-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tarjeta de Ciclos Escolares -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold mb-4 text-primary">Ciclos Escolares</h2>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <p class="text-gray-600">Total: {{ school_cycles.count }}</p>
-                <a href="{% url 'workcenter:schoolcycle_create' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                    Nuevo Ciclo
-                </a>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Centro</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fechas</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for cycle in school_cycles %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.work_center.name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ cycle.start_date }} - {{ cycle.end_date }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{% url 'workcenter:schoolcycle_update' cycle.id %}" class="text-primary hover:text-primary-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <!-- Acciones rápidas -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <a href="{% url 'workcenter:workcenter_create' %}" 
+               class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors text-center">
+                <i class="fas fa-building text-2xl mb-2"></i>
+                <div class="font-semibold">Nuevo Centro</div>
+                <div class="text-sm opacity-90">Crear centro de trabajo</div>
+            </a>
+            <a href="{% url 'workcenter:classroom_create' %}" 
+               class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-center">
+                <i class="fas fa-chalkboard-teacher text-2xl mb-2"></i>
+                <div class="font-semibold">Nueva Aula</div>
+                <div class="text-sm opacity-90">Registrar aula</div>
+            </a>
+            <a href="{% url 'workcenter:schoolcycle_create' %}" 
+               class="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700 transition-colors text-center">
+                <i class="fas fa-calendar-alt text-2xl mb-2"></i>
+                <div class="font-semibold">Nuevo Ciclo</div>
+                <div class="text-sm opacity-90">Crear ciclo escolar</div>
+            </a>
+            <a href="{% url 'workcenter:cycle_config_list' %}" 
+               class="bg-indigo-600 text-white p-4 rounded-lg hover:bg-indigo-700 transition-colors text-center">
+                <i class="fas fa-cog text-2xl mb-2"></i>
+                <div class="font-semibold">Configurar Ciclos</div>
+                <div class="text-sm opacity-90">Gestionar activación</div>
+            </a>
+            <a href="{% url 'workcenter:schoolperiod_create' %}" 
+               class="bg-orange-600 text-white p-4 rounded-lg hover:bg-orange-700 transition-colors text-center">
+                <i class="fas fa-clock text-2xl mb-2"></i>
+                <div class="font-semibold">Nuevo Periodo</div>
+                <div class="text-sm opacity-90">Definir periodo</div>
+            </a>
         </div>
     </div>
 </div>

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PRIA - Plataforma de Registro e Información Académica{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">PRIA</h1>
+            <div class="flex space-x-4">
+                {% if user.is_authenticated %}
+                    <span class="text-sm">Bienvenido, {{ user.username }}</span>
+                    <a href="{% url 'core:logout' %}" class="text-sm hover:text-blue-200">Cerrar sesión</a>
+                {% else %}
+                    <a href="{% url 'core:login' %}" class="text-sm hover:text-blue-200">Iniciar sesión</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto py-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-blue-600 text-white py-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 PRIA. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

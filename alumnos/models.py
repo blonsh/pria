@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+
 class Alumno(models.Model):
     """
     Modelo que representa un alumno.
@@ -9,13 +10,15 @@ class Alumno(models.Model):
     user = models.OneToOneField(
         User,
         verbose_name=_('usuario'),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='alumnos_alumno'
     )
     fecha_nacimiento = models.DateField(_('fecha de nacimiento'))
     carrera = models.ForeignKey(
         'core.Carrera',
         verbose_name=_('carrera'),
         on_delete=models.SET_NULL,
+        related_name='alumnos_alumnos',
         null=True
     )
     numero_cuenta = models.CharField(_('número de cuenta'), max_length=20, unique=True)
@@ -28,8 +31,3 @@ class Alumno(models.Model):
         
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
-
-class AlumnoAdmin(models.ModelAdmin):
-    list_display = ('user', 'numero_cuenta', 'carrera')
-    list_filter = ('carrera',)
-    search_fields = ('user__first_name', 'user__last_name', 'numero_cuenta')

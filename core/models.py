@@ -91,13 +91,15 @@ class Alumno(models.Model):
     user = models.OneToOneField(
         User,
         verbose_name=_('usuario'),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='core_alumno'
     )
     fecha_nacimiento = models.DateField(_('fecha de nacimiento'))
     carrera = models.ForeignKey(
         Carrera,
         verbose_name=_('carrera'),
         on_delete=models.SET_NULL,
+        related_name='core_alumnos',
         null=True
     )
     

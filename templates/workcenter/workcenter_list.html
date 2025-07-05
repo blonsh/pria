@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Centros de Trabajo - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Centros de Trabajo</h1>
+        <p class="text-gray-600">Gestiona los centros educativos registrados en el sistema</p>
+    </div>
+
+    <!-- Botón para crear nuevo centro de trabajo -->
+    <div class="mb-6">
+        <a href="{% url 'workcenter:workcenter_create' %}" 
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="fas fa-plus mr-2"></i>Nuevo Centro de Trabajo
+        </a>
+    </div>
+
+    <!-- Lista de centros de trabajo -->
+    {% if work_centers %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for work_center in work_centers %}
+            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">{{ work_center.name }}</h3>
+                        <div class="flex space-x-3">
+                            <a href="{% url 'workcenter:workcenter_detail' work_center.pk %}" 
+                               class="text-green-600 hover:text-green-800 text-sm flex items-center">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span class="hidden sm:inline">Ver</span>
+                            </a>
+                            <a href="{% url 'workcenter:workcenter_update' work_center.pk %}" 
+                               class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                                <i class="fas fa-edit mr-1"></i>
+                                <span class="hidden sm:inline">Editar</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Dirección:</span>
+                            <p class="text-gray-900">{{ work_center.address }}</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Director:</span>
+                            <p class="text-gray-900">{{ work_center.director_name }}</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Control Escolar:</span>
+                            <p class="text-gray-900">{{ work_center.school_control_name }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>Aulas: {{ work_center.classroom_set.count }}</span>
+                            <span>Ciclos: {{ work_center.schoolcycle_set.count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <div class="text-gray-400 mb-4">
+                <i class="fas fa-building text-6xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No hay centros de trabajo registrados</h3>
+            <p class="text-gray-600 mb-6">Comienza creando el primer centro de trabajo en el sistema.</p>
+            <a href="{% url 'workcenter:workcenter_create' %}" 
+               class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                Crear Primer Centro de Trabajo
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
