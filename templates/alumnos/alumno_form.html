@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-primary mb-2">{{ title }}</h1>
+                <p class="text-gray-600">Completa la información del alumno</p>
+            </div>
+            <a href="{% url 'alumnos:alumno_list' %}" 
+               class="text-primary hover:text-primary-dark font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver a la lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-white rounded-lg shadow p-8">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Mensajes de error -->
+            {% if form.errors %}
+            <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            Hay errores en el formulario
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <ul class="list-disc pl-5 space-y-1">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Información Personal -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    <i class="fas fa-user mr-2 text-primary"></i>
+                    Información Personal
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.first_name.label }} *
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.last_name.label }} *
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.username.label }} *
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.email.label }} *
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Académica -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    <i class="fas fa-graduation-cap mr-2 text-primary"></i>
+                    Información Académica
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.carrera.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.carrera.label }} *
+                        </label>
+                        {{ form.carrera }}
+                        {% if form.carrera.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.carrera.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.numero_cuenta.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.numero_cuenta.label }} *
+                        </label>
+                        {{ form.numero_cuenta }}
+                        {% if form.numero_cuenta.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.numero_cuenta.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Adicional -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                    Información Adicional
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.fecha_nacimiento.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.fecha_nacimiento.label }} *
+                        </label>
+                        {{ form.fecha_nacimiento }}
+                        {% if form.fecha_nacimiento.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.fecha_nacimiento.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.foto.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.foto.label }}
+                        </label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <div class="space-y-1 text-center">
+                                <i class="fas fa-camera text-gray-400 text-3xl mb-2"></i>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="{{ form.foto.id_for_label }}" class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                                        <span>Subir foto</span>
+                                        {{ form.foto }}
+                                    </label>
+                                    <p class="pl-1">o arrastrar y soltar</p>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG hasta 10MB</p>
+                            </div>
+                        </div>
+                        {% if form.foto.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.foto.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contraseñas -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    <i class="fas fa-lock mr-2 text-primary"></i>
+                    Contraseña de Acceso
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.password1.label }} *
+                        </label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                        {% if form.password1.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.password1.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.password2.label }} *
+                        </label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex justify-end space-x-4 pt-6">
+                <a href="{% url 'alumnos:alumno_list' %}" 
+                   class="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    {{ submit_text }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Funcionalidad para mostrar vista previa de la imagen
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('{{ form.foto.id_for_label }}');
+    const dropZone = fileInput.closest('.border-dashed');
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                dropZone.innerHTML = `
+                    <div class="space-y-1 text-center">
+                        <img src="${e.target.result}" alt="Vista previa" class="mx-auto h-20 w-20 object-cover rounded-full">
+                        <p class="text-sm text-gray-600">${file.name}</p>
+                        <button type="button" onclick="resetFileInput()" class="text-primary hover:text-primary-dark text-sm">
+                            Cambiar imagen
+                        </button>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Drag and drop functionality
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('border-primary');
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+});
+
+function resetFileInput() {
+    const fileInput = document.getElementById('{{ form.foto.id_for_label }}');
+    fileInput.value = '';
+    location.reload();
+}
+</script>
+{% endblock %} 

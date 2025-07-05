@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard de Alumnos - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-primary mb-2">Gestión de Alumnos</h1>
+        <p class="text-gray-600">Administra los estudiantes registrados en el sistema</p>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total de Alumnos -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total de Alumnos</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_alumnos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alumnos por Carrera -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Carreras Activas</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ alumnos_por_carrera|length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                    <i class="fas fa-plus text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Acciones</p>
+                    <a href="{% url 'alumnos:alumno_create' %}" class="text-primary hover:text-primary-dark font-medium">
+                        Registrar Alumno
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Últimos Alumnos Registrados -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Últimos Alumnos Registrados</h3>
+            </div>
+            <div class="p-6">
+                {% if ultimos_alumnos %}
+                    <div class="space-y-4">
+                        {% for alumno in ultimos_alumnos %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                {% if alumno.foto %}
+                                    <img src="{{ alumno.foto.url }}" alt="Foto de {{ alumno.user.get_full_name }}" 
+                                         class="w-10 h-10 rounded-full object-cover">
+                                {% else %}
+                                    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-gray-600"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ alumno.user.get_full_name }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">{{ alumno.numero_cuenta }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">{{ alumno.carrera.nombre }}</p>
+                                <a href="{% url 'alumnos:alumno_detail' alumno.pk %}" 
+                                   class="text-primary hover:text-primary-dark text-sm">
+                                    Ver detalles
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4">
+                        <a href="{% url 'alumnos:alumno_list' %}" 
+                           class="text-primary hover:text-primary-dark font-medium">
+                            Ver todos los alumnos →
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No hay alumnos registrados</p>
+                        <a href="{% url 'alumnos:alumno_create' %}" 
+                           class="mt-4 inline-block bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90">
+                            Registrar primer alumno
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Alumnos por Carrera -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Alumnos por Carrera</h3>
+            </div>
+            <div class="p-6">
+                {% if alumnos_por_carrera %}
+                    <div class="space-y-4">
+                        {% for carrera in alumnos_por_carrera %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-white text-sm"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ carrera.carrera__nombre|default:"Sin carrera" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-primary">{{ carrera.count }}</p>
+                                <p class="text-xs text-gray-500">alumnos</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-chart-pie text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No hay datos de carreras</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="mt-8 bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{% url 'alumnos:alumno_create' %}" 
+               class="flex items-center p-4 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                <i class="fas fa-user-plus text-xl mr-3"></i>
+                <div>
+                    <p class="font-medium">Registrar Alumno</p>
+                    <p class="text-sm opacity-90">Agregar nuevo estudiante</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'alumnos:alumno_list' %}" 
+               class="flex items-center p-4 bg-blue-600 text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                <i class="fas fa-list text-xl mr-3"></i>
+                <div>
+                    <p class="font-medium">Ver Todos</p>
+                    <p class="text-sm opacity-90">Lista completa de alumnos</p>
+                </div>
+            </a>
+            
+            <a href="#" 
+               class="flex items-center p-4 bg-green-600 text-white rounded-lg hover:bg-opacity-90 transition-colors">
+                <i class="fas fa-file-export text-xl mr-3"></i>
+                <div>
+                    <p class="font-medium">Exportar</p>
+                    <p class="text-sm opacity-90">Generar reportes</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

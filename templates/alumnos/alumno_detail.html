@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalles del Alumno - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-primary mb-2">Detalles del Alumno</h1>
+                <p class="text-gray-600">Información completa del estudiante</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'alumnos:alumno_update' alumno.pk %}" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>
+                    Editar
+                </a>
+                <a href="{% url 'alumnos:alumno_list' %}" 
+                   class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Principal -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-primary to-purple-600">
+            <div class="flex items-center">
+                {% if alumno.foto %}
+                    <img src="{{ alumno.foto.url }}" alt="Foto de {{ alumno.user.get_full_name }}" 
+                         class="w-16 h-16 rounded-full object-cover border-4 border-white">
+                {% else %}
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center border-4 border-white">
+                        <i class="fas fa-user text-2xl text-primary"></i>
+                    </div>
+                {% endif %}
+                <div class="ml-4 text-white">
+                    <h2 class="text-2xl font-bold">{{ alumno.user.get_full_name }}</h2>
+                    <p class="text-white opacity-90">{{ alumno.numero_cuenta }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Información Personal -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-user mr-2 text-primary"></i>
+                        Información Personal
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Nombre completo:</span>
+                            <span class="text-gray-900">{{ alumno.user.get_full_name }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Correo electrónico:</span>
+                            <span class="text-gray-900">{{ alumno.user.email }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Nombre de usuario:</span>
+                            <span class="text-gray-900">{{ alumno.user.username }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Fecha de nacimiento:</span>
+                            <span class="text-gray-900">{{ alumno.fecha_nacimiento|date:"d/m/Y" }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Edad:</span>
+                            <span class="text-gray-900">{{ alumno.fecha_nacimiento|timesince }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Académica -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-graduation-cap mr-2 text-primary"></i>
+                        Información Académica
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Número de cuenta:</span>
+                            <span class="text-gray-900 font-mono">{{ alumno.numero_cuenta }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Carrera:</span>
+                            <span class="text-gray-900">{{ alumno.carrera.nombre|default:"Sin asignar" }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Estado:</span>
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                Activo
+                            </span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Fecha de registro:</span>
+                            <span class="text-gray-900">{{ alumno.user.date_joined|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between py-3 border-b border-gray-100">
+                            <span class="font-medium text-gray-700">Último acceso:</span>
+                            <span class="text-gray-900">{{ alumno.user.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas y Acciones -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <!-- Estadísticas -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Estadísticas</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600">Días registrado:</span>
+                    <span class="font-semibold text-gray-900">{{ alumno.user.date_joined|timesince }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600">Estado de cuenta:</span>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        Activa
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Acciones</h3>
+            <div class="space-y-3">
+                <a href="{% url 'alumnos:alumno_update' alumno.pk %}" 
+                   class="flex items-center p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
+                    <i class="fas fa-edit mr-3"></i>
+                    <span>Editar información</span>
+                </a>
+                <a href="#" 
+                   class="flex items-center p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors">
+                    <i class="fas fa-file-pdf mr-3"></i>
+                    <span>Generar reporte</span>
+                </a>
+                <a href="#" 
+                   class="flex items-center p-3 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors">
+                    <i class="fas fa-envelope mr-3"></i>
+                    <span>Enviar mensaje</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Sistema</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600">ID:</span>
+                    <span class="font-mono text-gray-900">{{ alumno.pk }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600">Usuario ID:</span>
+                    <span class="font-mono text-gray-900">{{ alumno.user.pk }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600">Creado:</span>
+                    <span class="text-gray-900">{{ alumno.user.date_joined|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones de Administración -->
+    <div class="mt-8 bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Acciones de Administración</h3>
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'alumnos:alumno_update' alumno.pk %}" 
+               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-edit mr-2"></i>
+                Editar Alumno
+            </a>
+            <a href="#" 
+               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fas fa-file-export mr-2"></i>
+                Exportar Datos
+            </a>
+            <a href="#" 
+               class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
+                <i class="fas fa-key mr-2"></i>
+                Resetear Contraseña
+            </a>
+            <a href="{% url 'alumnos:alumno_delete' alumno.pk %}" 
+               class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                <i class="fas fa-trash mr-2"></i>
+                Eliminar Alumno
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
