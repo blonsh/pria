@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Planes de Estudios{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            <i class="fas fa-graduation-cap text-blue-600 mr-3"></i>
+            Planes de Estudios
+        </h1>
+        <p class="text-gray-600">Gestiona los planes de estudios de tu institución</p>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600 transition-all duration-300 hover:bg-blue-200">
+                    <i class="fas fa-graduation-cap text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total Planes</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_planes }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600 transition-all duration-300 hover:bg-green-200">
+                    <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Planes Activos</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ planes_activos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 transition-all duration-300 hover:bg-yellow-200">
+                    <i class="fas fa-edit text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">En Borrador</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ planes_borrador }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-600 transition-all duration-300 hover:bg-purple-200">
+                    <i class="fas fa-plus text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Nuevo Plan</p>
+                    <a href="{% url 'planes_estudio:plan_create' %}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200">
+                        Crear
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-list text-blue-600 mr-2"></i>
+                Gestión de Planes
+            </h3>
+            <div class="space-y-3">
+                <a href="{% url 'planes_estudio:plan_list' %}" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-eye mr-2"></i>
+                    Ver todos los planes
+                </a>
+                <a href="{% url 'planes_estudio:plan_create' %}" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-plus mr-2"></i>
+                    Crear nuevo plan
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-trophy text-green-600 mr-2"></i>
+                Competencias
+            </h3>
+            <div class="space-y-3">
+                <a href="{% url 'planes_estudio:competencia_list' %}" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-list mr-2"></i>
+                    Ver competencias
+                </a>
+                <a href="{% url 'planes_estudio:competencia_create' %}" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-plus mr-2"></i>
+                    Crear competencia
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-line text-purple-600 mr-2"></i>
+                Reportes
+            </h3>
+            <div class="space-y-3">
+                <a href="#" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    Reporte de planes
+                </a>
+                <a href="#" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-download mr-2"></i>
+                    Exportar datos
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-book-open text-orange-600 mr-2"></i>
+                Documentación
+            </h3>
+            <div class="space-y-3">
+                <a href="{% url 'planes_estudio:documentacion' %}" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-book mr-2"></i>
+                    Guías y documentación
+                </a>
+                <a href="#" 
+                   class="block w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition duration-150">
+                    <i class="fas fa-video mr-2"></i>
+                    Tutoriales en video
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planes recientes -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            <i class="fas fa-clock text-orange-600 mr-2"></i>
+            Planes Recientes
+        </h3>
+        
+        {% if planes_recientes %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Plan de Estudios
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Carrera
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Centro
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Estado
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for plan in planes_recientes %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ plan.nombre }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ plan.carrera.nombre }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ plan.work_center.name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                {% if plan.estado == 'ACTIVO' %}bg-green-100 text-green-800
+                                {% elif plan.estado == 'BORRADOR' %}bg-yellow-100 text-yellow-800
+                                {% elif plan.estado == 'INACTIVO' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ plan.get_estado_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="{% url 'planes_estudio:plan_detail' plan.pk %}" 
+                               class="text-blue-600 hover:text-blue-900 mr-3">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'planes_estudio:plan_update' plan.pk %}" 
+                               class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="fas fa-inbox text-gray-400 text-4xl mb-4"></i>
+            <p class="text-gray-500">No hay planes de estudios recientes</p>
+            <a href="{% url 'planes_estudio:plan_create' %}" 
+               class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <i class="fas fa-plus mr-2"></i>
+                Crear primer plan
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

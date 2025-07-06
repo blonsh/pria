@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Plan de Estudios{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">
+                <i class="fas fa-exclamation-triangle text-red-600 mr-3"></i>
+                Eliminar Plan de Estudios
+            </h1>
+            <p class="text-gray-600 mt-2">Confirma la eliminación del plan de estudios</p>
+        </div>
+
+        <!-- Alerta de confirmación -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+            <div class="flex items-center mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl mr-3"></i>
+                <h3 class="text-lg font-semibold text-red-800">¿Estás seguro?</h3>
+            </div>
+            <p class="text-red-700 mb-4">
+                Esta acción eliminará permanentemente el plan de estudios <strong>"{{ object.nombre }}"</strong> 
+                y todos sus datos asociados:
+            </p>
+            <ul class="text-red-700 space-y-1 mb-4">
+                <li>• Todos los semestres del plan</li>
+                <li>• Todas las materias asignadas</li>
+                <li>• Objetivos educativos</li>
+                <li>• Perfil de egreso</li>
+                <li>• Historial de versiones</li>
+            </ul>
+            <p class="text-red-700 font-semibold">
+                ⚠️ Esta acción no se puede deshacer.
+            </p>
+        </div>
+
+        <!-- Información del plan -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                Información del Plan
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Nombre:</p>
+                    <p class="text-gray-900">{{ object.nombre }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Carrera:</p>
+                    <p class="text-gray-900">{{ object.carrera.nombre }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Centro:</p>
+                    <p class="text-gray-900">{{ object.work_center.name }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Estado:</p>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                        {% if object.estado == 'ACTIVO' %}bg-green-100 text-green-800
+                        {% elif object.estado == 'BORRADOR' %}bg-yellow-100 text-yellow-800
+                        {% elif object.estado == 'INACTIVO' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ object.get_estado_display }}
+                    </span>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Duración:</p>
+                    <p class="text-gray-900">{{ object.duracion_semestres }} semestres</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Créditos:</p>
+                    <p class="text-gray-900">{{ object.creditos_totales }} créditos</p>
+                </div>
+            </div>
+            
+            {% if object.descripcion %}
+            <div class="mt-4">
+                <p class="text-sm font-medium text-gray-600">Descripción:</p>
+                <p class="text-gray-900">{{ object.descripcion }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Estadísticas del plan -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-bar text-purple-600 mr-2"></i>
+                Estadísticas del Plan
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ object.semestres.count }}</p>
+                    <p class="text-sm text-gray-600">Semestres</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-green-600">
+                        {% with total_materias=0 %}
+                            {% for semestre in object.semestres.all %}
+                                {% with total_materias=total_materias|add:semestre.materias.count %}{% endwith %}
+                            {% endfor %}
+                            {{ total_materias }}
+                        {% endwith %}
+                    </p>
+                    <p class="text-sm text-gray-600">Materias</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-purple-600">{{ object.objetivos_educativos.count }}</p>
+                    <p class="text-sm text-gray-600">Objetivos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de eliminación -->
+        <form method="post" class="bg-white rounded-lg shadow-md p-6">
+            {% csrf_token %}
+            
+            <!-- Campo de confirmación -->
+            <div class="mb-6">
+                <label for="confirmacion" class="block text-sm font-medium text-gray-700 mb-2">
+                    Escribe "ELIMINAR" para confirmar
+                </label>
+                <input type="text" id="confirmacion" name="confirmacion" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                       placeholder="Escribe ELIMINAR">
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex justify-end space-x-4">
+                <a href="{% url 'planes_estudio:plan_list' %}" 
+                   class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg"
+                        id="btn-eliminar" disabled>
+                    <i class="fas fa-trash mr-2"></i>
+                    Eliminar Plan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Validación de confirmación
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmacionInput = document.getElementById('confirmacion');
+        const btnEliminar = document.getElementById('btn-eliminar');
+        
+        confirmacionInput.addEventListener('input', function() {
+            if (this.value.trim().toUpperCase() === 'ELIMINAR') {
+                btnEliminar.disabled = false;
+                btnEliminar.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                btnEliminar.classList.add('bg-red-600', 'hover:bg-red-700');
+            } else {
+                btnEliminar.disabled = true;
+                btnEliminar.classList.add('bg-gray-400', 'cursor-not-allowed');
+                btnEliminar.classList.remove('bg-red-600', 'hover:bg-red-700');
+            }
+        });
+        
+        // Confirmación adicional al enviar
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (confirmacionInput.value.trim().toUpperCase() !== 'ELIMINAR') {
+                e.preventDefault();
+                alert('Por favor, escribe "ELIMINAR" para confirmar la eliminación.');
+            } else {
+                if (!confirm('¿Estás completamente seguro de que quieres eliminar este plan de estudios? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %} 

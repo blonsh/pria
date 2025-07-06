@@ -1,0 +1,672 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Guías y Documentación - Planes de Estudios{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            <i class="fas fa-book-open text-blue-600 mr-3"></i>
+            Guías y Documentación
+        </h1>
+        <p class="text-gray-600">Documentación completa para el uso del módulo de Planes de Estudios</p>
+    </div>
+
+    <!-- Navegación de documentación -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar de navegación -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Índice</h3>
+                <nav class="space-y-2">
+                    <a href="#introduccion" class="block text-blue-600 hover:text-blue-800 py-1">📖 Introducción</a>
+                    <a href="#conceptos-basicos" class="block text-blue-600 hover:text-blue-800 py-1">🎯 Conceptos Básicos</a>
+                    <a href="#crear-plan" class="block text-blue-600 hover:text-blue-800 py-1">➕ Crear Plan de Estudios</a>
+                    <a href="#gestionar-semestres" class="block text-blue-600 hover:text-blue-800 py-1">📅 Gestionar Semestres</a>
+                    <a href="#asignar-materias" class="block text-blue-600 hover:text-blue-800 py-1">📚 Asignar Materias</a>
+                    <a href="#competencias" class="block text-blue-600 hover:text-blue-800 py-1">🏆 Gestión de Competencias</a>
+                    <a href="#objetivos-perfil" class="block text-blue-600 hover:text-blue-800 py-1">🎓 Objetivos y Perfil</a>
+                    <a href="#estados-plan" class="block text-blue-600 hover:text-blue-800 py-1">📊 Estados del Plan</a>
+                    <a href="#reportes" class="block text-blue-600 hover:text-blue-800 py-1">📈 Reportes y Exportación</a>
+                    <a href="#mejores-practicas" class="block text-blue-600 hover:text-blue-800 py-1">💡 Mejores Prácticas</a>
+                    <a href="#faq" class="block text-blue-600 hover:text-blue-800 py-1">❓ Preguntas Frecuentes</a>
+                </nav>
+                
+                <!-- Acciones Rápidas -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <h4 class="text-sm font-semibold text-gray-900 mb-3">🚀 Acciones Rápidas</h4>
+                    <div class="space-y-2">
+                        <a href="{% url 'planes_estudio:dashboard' %}" 
+                           class="block text-sm text-green-600 hover:text-green-800 py-1">
+                            <i class="fas fa-tachometer-alt mr-1"></i>
+                            Dashboard
+                        </a>
+                        <a href="{% url 'planes_estudio:plan_list' %}" 
+                           class="block text-sm text-blue-600 hover:text-blue-800 py-1">
+                            <i class="fas fa-list mr-1"></i>
+                            Ver Planes
+                        </a>
+                        <a href="{% url 'planes_estudio:plan_create' %}" 
+                           class="block text-sm text-purple-600 hover:text-purple-800 py-1">
+                            <i class="fas fa-plus mr-1"></i>
+                            Nuevo Plan
+                        </a>
+                        <a href="{% url 'planes_estudio:competencia_list' %}" 
+                           class="block text-sm text-orange-600 hover:text-orange-800 py-1">
+                            <i class="fas fa-trophy mr-1"></i>
+                            Competencias
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="lg:col-span-3 space-y-8">
+            
+            <!-- Introducción -->
+            <section id="introduccion" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    Introducción al Módulo de Planes de Estudios
+                </h2>
+                <div class="prose max-w-none">
+                    <p class="text-gray-700 mb-4">
+                        El módulo de Planes de Estudios es una herramienta integral que permite a las instituciones educativas 
+                        diseñar, gestionar y mantener sus programas académicos de manera eficiente y organizada.
+                    </p>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                        <h4 class="font-semibold text-blue-800">¿Qué puedes hacer con este módulo?</h4>
+                        <ul class="mt-2 text-blue-700 space-y-1">
+                            <li>• Crear y gestionar planes de estudios completos</li>
+                            <li>• Organizar materias por semestres</li>
+                            <li>• Definir competencias y objetivos educativos</li>
+                            <li>• Establecer perfiles de egreso</li>
+                            <li>• Controlar versiones de los planes</li>
+                            <li>• Generar reportes académicos</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conceptos Básicos -->
+            <section id="conceptos-basicos" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-lightbulb text-yellow-600 mr-2"></i>
+                    Conceptos Básicos
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-green-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Plan de Estudios</h4>
+                            <p class="text-gray-600 text-sm">Documento que define la estructura académica completa de una carrera, incluyendo materias, créditos y secuencia de aprendizaje.</p>
+                        </div>
+                        <div class="border-l-4 border-blue-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Semestre</h4>
+                            <p class="text-gray-600 text-sm">Período académico que agrupa materias relacionadas y define la progresión del aprendizaje.</p>
+                        </div>
+                        <div class="border-l-4 border-purple-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Materia</h4>
+                            <p class="text-gray-600 text-sm">Unidad de aprendizaje con créditos específicos, horas de teoría, práctica e independiente.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-orange-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Competencia</h4>
+                            <p class="text-gray-600 text-sm">Habilidad o capacidad que el estudiante desarrolla a través de las materias del plan.</p>
+                        </div>
+                        <div class="border-l-4 border-red-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Objetivo Educativo</h4>
+                            <p class="text-gray-600 text-sm">Meta específica que se busca alcanzar con el plan de estudios.</p>
+                        </div>
+                        <div class="border-l-4 border-indigo-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Perfil de Egreso</h4>
+                            <p class="text-gray-600 text-sm">Descripción de las características y competencias que tendrá el egresado.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Crear Plan de Estudios -->
+            <section id="crear-plan" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-plus-circle text-green-600 mr-2"></i>
+                    Crear un Plan de Estudios
+                </h2>
+                <div class="space-y-4">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">Pasos para crear un plan:</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-green-700">
+                            <li><strong>Accede al módulo:</strong> 
+                                <a href="{% url 'planes_estudio:plan_create' %}" class="text-blue-600 hover:text-blue-800 underline">
+                                    Ve a Planes de Estudios → Nuevo Plan
+                                </a>
+                            </li>
+                            <li><strong>Información básica:</strong> Completa nombre, descripción y selecciona carrera</li>
+                            <li><strong>Centro de trabajo:</strong> Asigna el centro donde se impartirá</li>
+                            <li><strong>Ciclo de inicio:</strong> Define cuándo comenzará el plan</li>
+                            <li><strong>Duración:</strong> Establece el número de semestres</li>
+                            <li><strong>Créditos totales:</strong> Define los créditos del programa completo</li>
+                            <li><strong>Estado:</strong> Inicia como "Borrador"</li>
+                        </ol>
+                        <div class="mt-4 p-3 bg-white rounded border">
+                            <p class="text-sm text-green-700 mb-2">
+                                <i class="fas fa-lightbulb mr-1"></i>
+                                <strong>Consejo:</strong> Revisa primero la 
+                                <a href="{% url 'planes_estudio:plan_list' %}" class="text-blue-600 hover:text-blue-800 underline">
+                                    lista de planes existentes
+                                </a> 
+                                para evitar duplicados.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-yellow-800 mb-2">⚠️ Consideraciones importantes:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-yellow-700">
+                            <li>El nombre debe ser único para la carrera y centro seleccionados</li>
+                            <li>La duración debe ser realista según el programa</li>
+                            <li>Los créditos totales deben coincidir con la suma de materias</li>
+                            <li>Revisa que la carrera tenga materias disponibles</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gestionar Semestres -->
+            <section id="gestionar-semestres" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                    Gestionar Semestres
+                </h2>
+                <div class="space-y-4">
+                    <p class="text-gray-700">
+                        Los semestres son la base de la organización del plan de estudios. Cada semestre agrupa materias 
+                        relacionadas y define la progresión del aprendizaje.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Configuración de semestres:</h4>
+                            <ul class="text-blue-700 space-y-1 text-sm">
+                                <li>• Número de semestre (1, 2, 3...)</li>
+                                <li>• Nombre descriptivo (opcional)</li>
+                                <li>• Descripción del semestre</li>
+                                <li>• Indicador de semestre optativo</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">Mejores prácticas:</h4>
+                            <ul class="text-green-700 space-y-1 text-sm">
+                                <li>• Organiza materias por complejidad</li>
+                                <li>• Considera prerrequisitos</li>
+                                <li>• Balancea la carga académica</li>
+                                <li>• Incluye materias optativas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Asignar Materias -->
+            <section id="asignar-materias" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-book text-indigo-600 mr-2"></i>
+                    Asignar Materias a Semestres
+                </h2>
+                <div class="space-y-4">
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-indigo-800 mb-2">Información de la materia:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-700">
+                            <div>
+                                <h5 class="font-medium">Datos básicos:</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li>• Materia (seleccionar del catálogo)</li>
+                                    <li>• Tipo (obligatoria, optativa, complementaria)</li>
+                                    <li>• Créditos asignados</li>
+                                    <li>• Orden dentro del semestre</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Distribución de horas:</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li>• Horas de teoría</li>
+                                    <li>• Horas de práctica</li>
+                                    <li>• Horas independiente</li>
+                                    <li>• Total de horas</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-white rounded border">
+                            <p class="text-sm text-indigo-700 mb-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>Nota:</strong> Para asignar materias, primero debes crear semestres en tu plan. 
+                                Ve a la 
+                                <a href="{% url 'planes_estudio:plan_list' %}" class="text-blue-600 hover:text-blue-800 underline">
+                                    lista de planes
+                                </a> 
+                                y selecciona "Ver semestres" en el plan deseado.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-orange-800 mb-2">Prerrequisitos:</h4>
+                        <p class="text-orange-700 text-sm">
+                            Puedes establecer materias que deben cursarse antes que otras. Esto ayuda a mantener 
+                            la secuencia lógica del aprendizaje y evita que los estudiantes tomen materias 
+                            para las que no están preparados.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Competencias -->
+            <section id="competencias" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-trophy text-yellow-600 mr-2"></i>
+                    Gestión de Competencias
+                </h2>
+                <div class="space-y-4">
+                    <p class="text-gray-700">
+                        Las competencias definen las habilidades que desarrollarán los estudiantes a través del plan de estudios.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-yellow-800 mb-2">Competencias Genéricas</h4>
+                        <p class="text-yellow-700 text-sm">
+                            Habilidades transversales aplicables a cualquier campo profesional.
+                        </p>
+                        <ul class="text-yellow-700 text-sm mt-2 space-y-1">
+                            <li>• Comunicación efectiva</li>
+                            <li>• Trabajo en equipo</li>
+                            <li>• Pensamiento crítico</li>
+                            <li>• Resolución de problemas</li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{% url 'planes_estudio:competencia_create' %}" 
+                               class="inline-flex items-center px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700">
+                                <i class="fas fa-plus mr-1"></i>
+                                Crear competencia
+                            </a>
+                        </div>
+                    </div>
+                                            <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">Competencias Específicas</h4>
+                        <p class="text-blue-700 text-sm">
+                            Habilidades propias de la disciplina o carrera.
+                        </p>
+                        <ul class="text-blue-700 text-sm mt-2 space-y-1">
+                            <li>• Conocimientos técnicos</li>
+                            <li>• Metodologías específicas</li>
+                            <li>• Herramientas del campo</li>
+                            <li>• Aplicaciones prácticas</li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{% url 'planes_estudio:competencia_list' %}" 
+                               class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+                                <i class="fas fa-list mr-1"></i>
+                                Ver competencias
+                            </a>
+                        </div>
+                    </div>
+                                            <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Competencias Transversales</h4>
+                        <p class="text-green-700 text-sm">
+                            Habilidades que conectan diferentes áreas del conocimiento.
+                        </p>
+                        <ul class="text-green-700 text-sm mt-2 space-y-1">
+                            <li>• Innovación</li>
+                            <li>• Liderazgo</li>
+                            <li>• Gestión de proyectos</li>
+                            <li>• Aprendizaje continuo</li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{% url 'planes_estudio:competencia_create' %}" 
+                               class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                                <i class="fas fa-plus mr-1"></i>
+                                Crear competencia
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Objetivos y Perfil -->
+            <section id="objetivos-perfil" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>
+                    Objetivos Educativos y Perfil de Egreso
+                </h2>
+                <div class="space-y-6">
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-purple-800 mb-2">Objetivos Educativos</h4>
+                        <p class="text-purple-700 mb-3">
+                            Los objetivos definen qué se busca lograr con el plan de estudios. Deben ser claros, 
+                            medibles y alineados con la misión de la institución.
+                        </p>
+                        <div class="bg-white p-3 rounded border">
+                            <h5 class="font-medium text-purple-800 mb-2">Ejemplo de objetivos:</h5>
+                            <ul class="text-purple-700 text-sm space-y-1">
+                                <li>• Formar profesionales con sólidos conocimientos técnicos</li>
+                                <li>• Desarrollar habilidades de investigación e innovación</li>
+                                <li>• Fomentar el compromiso con la sociedad</li>
+                                <li>• Preparar para el aprendizaje continuo</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 p-3 bg-purple-100 rounded border">
+                            <p class="text-sm text-purple-700 mb-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>Nota:</strong> Los objetivos se configuran por plan de estudios. 
+                                Ve a la 
+                                <a href="{% url 'planes_estudio:plan_list' %}" class="text-blue-600 hover:text-blue-800 underline">
+                                    lista de planes
+                                </a> 
+                                y selecciona un plan para configurar sus objetivos educativos.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">Perfil de Egreso</h4>
+                        <p class="text-green-700 mb-3">
+                            El perfil describe las características, competencias y capacidades que tendrá el egresado 
+                            al completar el programa.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-3 rounded border">
+                                <h5 class="font-medium text-green-800 mb-2">Descripción General:</h5>
+                                <p class="text-green-700 text-sm">
+                                    Visión general del profesional que se formará.
+                                </p>
+                            </div>
+                            <div class="bg-white p-3 rounded border">
+                                <h5 class="font-medium text-green-800 mb-2">Campo Laboral:</h5>
+                                <p class="text-green-700 text-sm">
+                                    Sectores y posiciones donde puede desempeñarse.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-green-100 rounded border">
+                            <p class="text-sm text-green-700 mb-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>Nota:</strong> El perfil de egreso se configura por plan de estudios. 
+                                Ve a la 
+                                <a href="{% url 'planes_estudio:plan_list' %}" class="text-blue-600 hover:text-blue-800 underline">
+                                    lista de planes
+                                </a> 
+                                y selecciona un plan para configurar su perfil de egreso.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Estados del Plan -->
+            <section id="estados-plan" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                    Estados del Plan de Estudios
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-yellow-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Borrador</h4>
+                            <p class="text-gray-600 text-sm">Plan en desarrollo. Puede ser editado libremente.</p>
+                        </div>
+                        <div class="border-l-4 border-green-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Activo</h4>
+                            <p class="text-gray-600 text-sm">Plan aprobado y en uso. Solo cambios menores permitidos.</p>
+                        </div>
+                        <div class="border-l-4 border-red-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Inactivo</h4>
+                            <p class="text-gray-600 text-sm">Plan descontinuado. No se puede editar.</p>
+                        </div>
+                        <div class="border-l-4 border-gray-400 pl-4">
+                            <h4 class="font-semibold text-gray-900">Archivado</h4>
+                            <p class="text-gray-600 text-sm">Plan histórico. Solo consulta permitida.</p>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">Flujo de estados:</h4>
+                        <div class="text-blue-700 text-sm space-y-2">
+                            <div class="flex items-center">
+                                <span class="bg-yellow-400 text-white px-2 py-1 rounded text-xs mr-2">Borrador</span>
+                                <i class="fas fa-arrow-right mx-2"></i>
+                                <span class="bg-green-400 text-white px-2 py-1 rounded text-xs">Activo</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="bg-green-400 text-white px-2 py-1 rounded text-xs mr-2">Activo</span>
+                                <i class="fas fa-arrow-right mx-2"></i>
+                                <span class="bg-red-400 text-white px-2 py-1 rounded text-xs">Inactivo</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="bg-red-400 text-white px-2 py-1 rounded text-xs mr-2">Inactivo</span>
+                                <i class="fas fa-arrow-right mx-2"></i>
+                                <span class="bg-gray-400 text-white px-2 py-1 rounded text-xs">Archivado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reportes -->
+            <section id="reportes" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-chart-bar text-indigo-600 mr-2"></i>
+                    Reportes y Exportación
+                </h2>
+                <div class="space-y-4">
+                    <p class="text-gray-700">
+                        El módulo permite generar diversos reportes para análisis y toma de decisiones.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="bg-indigo-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-indigo-800 mb-2">Tipos de reportes:</h4>
+                        <ul class="text-indigo-700 space-y-1 text-sm">
+                            <li>• Resumen del plan de estudios</li>
+                            <li>• Distribución de créditos por semestre</li>
+                            <li>• Mapa de competencias</li>
+                            <li>• Análisis de prerrequisitos</li>
+                            <li>• Comparación entre versiones</li>
+                            <li>• Estadísticas de materias</li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{% url 'planes_estudio:plan_list' %}" 
+                               class="inline-flex items-center px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Ver planes para reportes
+                            </a>
+                        </div>
+                    </div>
+                                            <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Formatos de exportación:</h4>
+                        <ul class="text-green-700 space-y-1 text-sm">
+                            <li>• PDF (para impresión)</li>
+                            <li>• Excel (para análisis)</li>
+                            <li>• CSV (para bases de datos)</li>
+                            <li>• JSON (para integración)</li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{% url 'planes_estudio:dashboard' %}" 
+                               class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                                <i class="fas fa-download mr-1"></i>
+                                Ir al dashboard
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mejores Prácticas -->
+            <section id="mejores-practicas" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-star text-yellow-600 mr-2"></i>
+                    Mejores Prácticas
+                </h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="bg-yellow-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-yellow-800 mb-2">Diseño del Plan</h4>
+                                <ul class="text-yellow-700 space-y-1 text-sm">
+                                    <li>• Comienza con materias fundamentales</li>
+                                    <li>• Progresa de lo básico a lo avanzado</li>
+                                    <li>• Balancea la carga académica</li>
+                                    <li>• Incluye materias optativas</li>
+                                    <li>• Considera la flexibilidad</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-800 mb-2">Gestión de Competencias</h4>
+                                <ul class="text-blue-700 space-y-1 text-sm">
+                                    <li>• Alinea con el perfil de egreso</li>
+                                    <li>• Distribuye a lo largo del plan</li>
+                                    <li>• Incluye competencias genéricas</li>
+                                    <li>• Define indicadores de logro</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800 mb-2">Validación y Revisión</h4>
+                                <ul class="text-green-700 space-y-1 text-sm">
+                                    <li>• Revisa la coherencia interna</li>
+                                    <li>• Valida con expertos del área</li>
+                                    <li>• Considera estándares externos</li>
+                                    <li>• Prueba la factibilidad</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-purple-800 mb-2">Mantenimiento</h4>
+                                <ul class="text-purple-700 space-y-1 text-sm">
+                                    <li>• Revisa periódicamente</li>
+                                    <li>• Actualiza según necesidades</li>
+                                    <li>• Documenta los cambios</li>
+                                    <li>• Mantén versiones históricas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section id="faq" class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-question-circle text-red-600 mr-2"></i>
+                    Preguntas Frecuentes
+                </h2>
+                <div class="space-y-4">
+                    <div class="border border-gray-200 rounded-lg">
+                        <div class="bg-gray-50 px-4 py-3 border-b">
+                            <h4 class="font-semibold text-gray-900">¿Puedo modificar un plan activo?</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700">
+                                Los planes activos solo permiten cambios menores. Para modificaciones significativas, 
+                                se recomienda crear una nueva versión del plan.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <div class="bg-gray-50 px-4 py-3 border-b">
+                            <h4 class="font-semibold text-gray-900">¿Cómo manejo los prerrequisitos?</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700">
+                                Puedes establecer prerrequisitos al asignar materias. El sistema validará automáticamente 
+                                que los estudiantes cumplan con los requisitos antes de cursar materias avanzadas.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <div class="bg-gray-50 px-4 py-3 border-b">
+                            <h4 class="font-semibold text-gray-900">¿Qué pasa si cambio el estado de un plan?</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700">
+                                El cambio de estado afecta la disponibilidad para matrícula. Los planes inactivos 
+                                no pueden ser seleccionados por nuevos estudiantes, pero los actuales pueden continuar.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <div class="bg-gray-50 px-4 py-3 border-b">
+                            <h4 class="font-semibold text-gray-900">¿Puedo exportar el plan completo?</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700">
+                                Sí, puedes exportar el plan en diferentes formatos (PDF, Excel, CSV) para análisis, 
+                                impresión o integración con otros sistemas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acciones Rápidas -->
+            <section class="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg shadow-md p-6 text-white">
+                <h2 class="text-2xl font-bold mb-4">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Acciones Rápidas
+                </h2>
+                <p class="mb-4">
+                    Accede directamente a las funciones principales del módulo:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="{% url 'planes_estudio:dashboard' %}" 
+                       class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition duration-200">
+                        <i class="fas fa-tachometer-alt text-2xl mb-2"></i>
+                        <p class="text-sm font-semibold">Dashboard</p>
+                    </a>
+                    <a href="{% url 'planes_estudio:plan_list' %}" 
+                       class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition duration-200">
+                        <i class="fas fa-list text-2xl mb-2"></i>
+                        <p class="text-sm font-semibold">Ver Planes</p>
+                    </a>
+                    <a href="{% url 'planes_estudio:plan_create' %}" 
+                       class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition duration-200">
+                        <i class="fas fa-plus text-2xl mb-2"></i>
+                        <p class="text-sm font-semibold">Nuevo Plan</p>
+                    </a>
+                    <a href="{% url 'planes_estudio:competencia_list' %}" 
+                       class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition duration-200">
+                        <i class="fas fa-trophy text-2xl mb-2"></i>
+                        <p class="text-sm font-semibold">Competencias</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Contacto y Soporte -->
+            <section class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md p-6 text-white">
+                <h2 class="text-2xl font-bold mb-4">
+                    <i class="fas fa-headset mr-2"></i>
+                    ¿Necesitas Ayuda?
+                </h2>
+                <p class="mb-4">
+                    Si tienes preguntas adicionales o necesitas soporte técnico, no dudes en contactarnos.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <i class="fas fa-envelope text-2xl mb-2"></i>
+                        <p class="text-sm">soporte@pria.edu.mx</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-phone text-2xl mb-2"></i>
+                        <p class="text-sm">+52 (55) 1234-5678</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-clock text-2xl mb-2"></i>
+                        <p class="text-sm">Lun-Vie 8:00-18:00</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %} 

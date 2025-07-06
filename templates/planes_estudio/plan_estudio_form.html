@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if form.instance.pk %}Editar Plan de Estudios{% else %}Nuevo Plan de Estudios{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">
+                    <i class="fas fa-graduation-cap text-blue-600 mr-3"></i>
+                    {% if form.instance.pk %}
+                        Editar Plan de Estudios
+                    {% else %}
+                        Nuevo Plan de Estudios
+                    {% endif %}
+                </h1>
+                <p class="text-gray-600 mt-2">
+                    {% if form.instance.pk %}
+                        Modifica la información del plan de estudios
+                    {% else %}
+                        Crea un nuevo plan de estudios para tu institución
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'planes_estudio:plan_list' %}" 
+               class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Información básica -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    Información Básica
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.nombre.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nombre del Plan *
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.nombre.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.carrera.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Carrera *
+                        </label>
+                        {{ form.carrera }}
+                        {% if form.carrera.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.carrera.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.descripcion.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Descripción
+                    </label>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.descripcion.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Configuración académica -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-cog text-green-600 mr-2"></i>
+                    Configuración Académica
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="{{ form.work_center.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Centro de Trabajo *
+                        </label>
+                        {{ form.work_center }}
+                        {% if form.work_center.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.work_center.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.ciclo_inicio.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Ciclo de Inicio *
+                        </label>
+                        {{ form.ciclo_inicio }}
+                        {% if form.ciclo_inicio.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.ciclo_inicio.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.duracion_semestres.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Duración (semestres) *
+                        </label>
+                        {{ form.duracion_semestres }}
+                        {% if form.duracion_semestres.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.duracion_semestres.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div>
+                        <label for="{{ form.creditos_totales.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Créditos Totales *
+                        </label>
+                        {{ form.creditos_totales }}
+                        {% if form.creditos_totales.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.creditos_totales.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.estado.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Estado *
+                        </label>
+                        {{ form.estado }}
+                        {% if form.estado.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.estado.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-plus-circle text-purple-600 mr-2"></i>
+                    Información Adicional
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.version.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Versión
+                        </label>
+                        {{ form.version }}
+                        {% if form.version.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.version.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.fecha_aprobacion.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Fecha de Aprobación
+                        </label>
+                        {{ form.fecha_aprobacion }}
+                        {% if form.fecha_aprobacion.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.fecha_aprobacion.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.observaciones.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Observaciones
+                    </label>
+                    {{ form.observaciones }}
+                    {% if form.observaciones.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.observaciones.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex justify-end space-x-4 pt-6">
+                <a href="{% url 'planes_estudio:plan_list' %}" 
+                   class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg">
+                    Cancelar
+                </a>
+                <button type="submit" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+                    <i class="fas fa-save mr-2"></i>
+                    {% if form.instance.pk %}
+                        Actualizar Plan
+                    {% else %}
+                        Crear Plan
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Información de ayuda -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h4 class="text-sm font-semibold text-blue-800 mb-2">
+            <i class="fas fa-lightbulb mr-2"></i>
+            Consejos para crear un plan de estudios
+        </h4>
+        <ul class="text-sm text-blue-700 space-y-1">
+            <li>• El nombre debe ser descriptivo y único para la carrera</li>
+            <li>• La duración debe reflejar la estructura real del programa</li>
+            <li>• Los créditos totales deben coincidir con la suma de materias</li>
+            <li>• Revisa que la carrera tenga materias disponibles</li>
+            <li>• El estado "Borrador" te permite hacer cambios antes de activar</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    /* Estilos para los campos del formulario */
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+    }
+    
+    textarea {
+        @apply resize-vertical min-h-[100px];
+    }
+    
+    /* Estilos para errores */
+    .error {
+        @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+</style>
+
+<script>
+    // Validación en tiempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.classList.add('error');
+                } else {
+                    this.classList.remove('error');
+                }
+            });
+        });
+        
+        // Validación antes de enviar
+        form.addEventListener('submit', function(e) {
+            let hasErrors = false;
+            
+            inputs.forEach(input => {
+                if (input.hasAttribute('required') && !input.value.trim()) {
+                    input.classList.add('error');
+                    hasErrors = true;
+                }
+            });
+            
+            if (hasErrors) {
+                e.preventDefault();
+                alert('Por favor, completa todos los campos requeridos.');
+            }
+        });
+    });
+</script>
+{% endblock %} 

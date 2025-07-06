@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% if form.instance.pk %}{% trans 'Editar Materia del Plan' %}{% else %}{% trans 'Agregar Materia al Semestre' %}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <!-- Header con iconos -->
+    <div class="flex items-center mb-6">
+        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+            <i class="fas fa-book text-2xl"></i>
+        </div>
+        <div>
+            <h2 class="text-2xl font-bold text-primary">
+                {% if form.instance.pk %}
+                    {% trans 'Editar Materia del Plan' %}
+                {% else %}
+                    {% trans 'Agregar Materia al Semestre' %}
+                {% endif %}
+            </h2>
+            <p class="text-gray-600">
+                {% if form.instance.pk %}
+                    {% trans 'Modifica los datos de la materia' %}
+                {% else %}
+                    {% trans 'Agrega una nueva materia al semestre' %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Información del contexto -->
+    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+            <div>
+                <p class="text-sm font-medium text-gray-900">Semestre {{ semestre.numero_semestre }}</p>
+                <p class="text-sm text-gray-600">{{ plan.nombre }}</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" novalidate class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Errores generales -->
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex">
+                <i class="fas fa-exclamation-triangle text-red-600 mr-3 mt-1"></i>
+                <div>
+                    <h3 class="text-sm font-medium text-red-800">{% trans 'Errores en el formulario' %}</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        {{ form.non_field_errors }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Campos del formulario -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for field in form.visible_fields %}
+            <div class="{% if field.name in 'horas_teoria,horas_practica,horas_independiente' %}md:col-span-1{% else %}md:col-span-2{% endif %}">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    {% if field.name == 'materia' %}
+                        <i class="fas fa-book mr-2 text-blue-600"></i>
+                    {% elif field.name == 'creditos' %}
+                        <i class="fas fa-graduation-cap mr-2 text-green-600"></i>
+                    {% elif field.name == 'tipo_materia' %}
+                        <i class="fas fa-tag mr-2 text-purple-600"></i>
+                    {% elif field.name == 'horas_teoria' %}
+                        <i class="fas fa-chalkboard-teacher mr-2 text-blue-600"></i>
+                    {% elif field.name == 'horas_practica' %}
+                        <i class="fas fa-flask mr-2 text-green-600"></i>
+                    {% elif field.name == 'horas_independiente' %}
+                        <i class="fas fa-home mr-2 text-purple-600"></i>
+                    {% else %}
+                        <i class="fas fa-edit mr-2 text-gray-600"></i>
+                    {% endif %}
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                </label>
+                
+                <div class="relative">
+                    {{ field }}
+                    {% if field.name == 'materia' %}
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if field.help_text %}
+                    <p class="mt-1 text-xs text-gray-500 flex items-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        {{ field.help_text }}
+                    </p>
+                {% endif %}
+                
+                {% for error in field.errors %}
+                    <p class="mt-1 text-xs text-red-500 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Resumen de horas -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                <i class="fas fa-calculator mr-2 text-gray-600"></i>
+                {% trans 'Resumen de Horas' %}
+            </h3>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="bg-blue-100 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-blue-800" id="total-teoria">0</div>
+                    <div class="text-xs text-blue-600">{% trans 'Teoría' %}</div>
+                </div>
+                <div class="bg-green-100 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-green-800" id="total-practica">0</div>
+                    <div class="text-xs text-green-600">{% trans 'Práctica' %}</div>
+                </div>
+                <div class="bg-purple-100 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-purple-800" id="total-independiente">0</div>
+                    <div class="text-xs text-purple-600">{% trans 'Independiente' %}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t">
+            <a href="{% url 'planes_estudio:materia_list' plan.id semestre.id %}" 
+               class="inline-flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition-all duration-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                {% trans 'Cancelar' %}
+            </a>
+            <button type="submit" 
+                    class="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-200 hover:scale-105 shadow-md">
+                <i class="fas fa-save mr-2"></i>
+                {% if form.instance.pk %}{% trans 'Guardar Cambios' %}{% else %}{% trans 'Agregar Materia' %}{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Script para calcular totales -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const teoriaInput = document.getElementById('id_horas_teoria');
+    const practicaInput = document.getElementById('id_horas_practica');
+    const independienteInput = document.getElementById('id_horas_independiente');
+    
+    function updateTotals() {
+        const teoria = parseInt(teoriaInput.value) || 0;
+        const practica = parseInt(practicaInput.value) || 0;
+        const independiente = parseInt(independienteInput.value) || 0;
+        
+        document.getElementById('total-teoria').textContent = teoria;
+        document.getElementById('total-practica').textContent = practica;
+        document.getElementById('total-independiente').textContent = independiente;
+    }
+    
+    [teoriaInput, practicaInput, independienteInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', updateTotals);
+            updateTotals(); // Inicializar
+        }
+    });
+});
+</script>
+{% endblock %} 

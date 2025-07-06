@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Eliminar Materia del Semestre' %}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-red-600">{% trans 'Eliminar Materia del Semestre' %}</h2>
+    <p class="mb-4 text-gray-700">
+        {% blocktrans with nombre=materia.materia.nombre semestre=semestre.numero_semestre %}
+        ¿Estás seguro de que deseas eliminar la materia <strong>{{ nombre }}</strong> del semestre <strong>{{ semestre }}</strong>? Esta acción no se puede deshacer.
+        {% endblocktrans %}
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-between mt-8">
+            <a href="{% url 'planes_estudio:materia_list' plan.id semestre.id %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">{% trans 'Cancelar' %}</a>
+            <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-semibold">{% trans 'Eliminar' %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ plan.nombre }} - Detalles del Plan de Estudios{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header con navegación -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                <i class="fas fa-graduation-cap text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ plan.nombre }}</h1>
+                <p class="text-gray-600">{{ plan.carrera.nombre }} - {{ plan.work_center.name }}</p>
+            </div>
+        </div>
+        <div class="flex space-x-2">
+            <a href="{% url 'planes_estudio:plan_update' plan.pk %}" 
+               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200">
+                <i class="fas fa-edit mr-2"></i>
+                Editar
+            </a>
+            <a href="{% url 'planes_estudio:plan_list' %}" 
+               class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Información general del plan -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                    <i class="fas fa-calendar-alt text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Duración</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ plan.duracion_semestres }} semestres</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                    <i class="fas fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Créditos</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ creditos_actuales }}/{{ plan.creditos_totales }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                    <i class="fas fa-book text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Materias</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_materias }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado del plan -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+                <h3 class="text-lg font-semibold text-gray-900">Estado del Plan</h3>
+            </div>
+            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full
+                {% if plan.estado == 'ACTIVO' %}bg-green-100 text-green-800
+                {% elif plan.estado == 'BORRADOR' %}bg-yellow-100 text-yellow-800
+                {% elif plan.estado == 'INACTIVO' %}bg-red-100 text-red-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                <i class="fas fa-circle mr-2"></i>
+                {{ plan.get_estado_display }}
+            </span>
+        </div>
+        <p class="text-gray-600 mt-2">{{ plan.descripcion }}</p>
+    </div>
+
+    <!-- Semestres -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-list-ol text-blue-600 mr-3"></i>
+                <h3 class="text-lg font-semibold text-gray-900">Semestres del Plan</h3>
+            </div>
+            <a href="{% url 'planes_estudio:semestre_list' plan.pk %}" 
+               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200">
+                <i class="fas fa-eye mr-2"></i>
+                Ver Semestres
+            </a>
+        </div>
+
+        {% if semestres %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for semestre in semestres %}
+            <div class="border border-gray-200 rounded-lg p-4 transition-all duration-200 hover:shadow-md">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-semibold text-gray-900">Semestre {{ semestre.numero_semestre }}</h4>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                        {{ semestre.materias.count }} materias
+                    </span>
+                </div>
+                <div class="text-sm text-gray-600 mb-3">
+                    <p><i class="fas fa-graduation-cap mr-1"></i>{{ semestre.get_creditos_semestre }} créditos</p>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="{% url 'planes_estudio:materia_list' plan.pk semestre.pk %}" 
+                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <i class="fas fa-eye mr-1"></i>Ver materias
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="fas fa-calendar-times text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">No hay semestres configurados para este plan.</p>
+            <a href="{% url 'planes_estudio:semestre_list' plan.pk %}" 
+               class="inline-flex items-center mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <i class="fas fa-plus mr-2"></i>
+                Agregar Semestres
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Objetivos Educativos -->
+    {% if objetivos %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center mb-4">
+            <i class="fas fa-bullseye text-blue-600 mr-3"></i>
+            <h3 class="text-lg font-semibold text-gray-900">Objetivos Educativos</h3>
+        </div>
+        <div class="space-y-3">
+            {% for objetivo in objetivos %}
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="font-medium text-gray-900 mb-2">{{ objetivo.titulo }}</h4>
+                <p class="text-gray-600 text-sm">{{ objetivo.descripcion }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Perfil de Egreso -->
+    {% if perfil_egreso %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center mb-4">
+            <i class="fas fa-user-graduate text-blue-600 mr-3"></i>
+            <h3 class="text-lg font-semibold text-gray-900">Perfil de Egreso</h3>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="font-medium text-gray-900 mb-2">{{ perfil_egreso.titulo }}</h4>
+            <p class="text-gray-600">{{ perfil_egreso.descripcion }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Información adicional -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center mb-4">
+            <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+            <h3 class="text-lg font-semibold text-gray-900">Información Adicional</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Creado por</p>
+                <p class="text-gray-900">{{ plan.creado_por.get_full_name|default:plan.creado_por.username }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600">Fecha de creación</p>
+                <p class="text-gray-900">{{ plan.fecha_creacion|date:"d/m/Y H:i" }}</p>
+            </div>
+            {% if plan.fecha_modificacion %}
+            <div>
+                <p class="text-sm font-medium text-gray-600">Última modificación</p>
+                <p class="text-gray-900">{{ plan.fecha_modificacion|date:"d/m/Y H:i" }}</p>
+            </div>
+            {% endif %}
+            <div>
+                <p class="text-sm font-medium text-gray-600">Versión</p>
+                <p class="text-gray-900">{{ plan.version|default:"1.0" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

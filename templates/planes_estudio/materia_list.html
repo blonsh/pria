@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Materias del Semestre' %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <!-- Header con iconos -->
+    <div class="flex items-center mb-6">
+        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+            <i class="fas fa-book-open text-2xl"></i>
+        </div>
+        <div>
+            <h2 class="text-2xl font-bold text-primary">{% trans 'Materias del Semestre' %}</h2>
+            <p class="text-gray-600">Semestre {{ semestre.numero_semestre }} - {{ plan.nombre }}</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas del semestre -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-50 rounded-lg p-4 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <i class="fas fa-list-ul text-blue-600 mr-3"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Total Materias</p>
+                    <p class="text-xl font-bold text-gray-900">{{ materias.count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Créditos</p>
+                    <p class="text-xl font-bold text-gray-900">{{ semestre.get_creditos_semestre }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-4 transition-all duration-300 hover:scale-105">
+            <div class="flex items-center">
+                <i class="fas fa-clock text-purple-600 mr-3"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Semestre</p>
+                    <p class="text-xl font-bold text-gray-900">{{ semestre.numero_semestre }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de materias -->
+    <div class="bg-white rounded-lg shadow-sm border">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-hashtag mr-2"></i>#
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-book mr-2"></i>{% trans 'Materia' %}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-graduation-cap mr-2"></i>{% trans 'Créditos' %}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-tag mr-2"></i>{% trans 'Tipo' %}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-clock mr-2"></i>{% trans 'Horas' %}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <i class="fas fa-cogs mr-2"></i>{% trans 'Acciones' %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for materia in materias %}
+                <tr class="transition-all duration-200 hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                            {{ forloop.counter }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-8 w-8">
+                                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-book text-blue-600 text-sm"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">{{ materia.materia.nombre }}</div>
+                                <div class="text-sm text-gray-500">{{ materia.materia.codigo }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <i class="fas fa-graduation-cap mr-1"></i>{{ materia.creditos }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {% if materia.tipo_materia == 'OBLIGATORIA' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <i class="fas fa-check-circle mr-1"></i>{{ materia.get_tipo_materia_display }}
+                            </span>
+                        {% elif materia.tipo_materia == 'OPTATIVA' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <i class="fas fa-star mr-1"></i>{{ materia.get_tipo_materia_display }}
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                <i class="fas fa-plus-circle mr-1"></i>{{ materia.get_tipo_materia_display }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="text-xs">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-chalkboard-teacher text-blue-500 mr-1"></i>
+                                <span>T: {{ materia.horas_teoria }}</span>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-flask text-green-500 mr-1"></i>
+                                <span>P: {{ materia.horas_practica }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-home text-purple-500 mr-1"></i>
+                                <span>I: {{ materia.horas_independiente }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <a href="{% url 'planes_estudio:materia_update' plan.id semestre.id materia.id %}" 
+                               class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                               title="{% trans 'Editar materia' %}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{% url 'planes_estudio:materia_delete' plan.id semestre.id materia.id %}" 
+                                  method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="text-red-600 hover:text-red-900 transition-colors duration-200"
+                                        onclick="return confirm('{% trans '¿Estás seguro de eliminar esta materia?' %}');"
+                                        title="{% trans 'Eliminar materia' %}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-8 text-center">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-book-open text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500 text-lg">{% trans 'No hay materias registradas en este semestre.' %}</p>
+                            <p class="text-gray-400 text-sm">{% trans 'Comienza agregando la primera materia.' %}</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="mt-6 flex flex-wrap gap-4">
+        <a href="{% url 'planes_estudio:materia_create' plan.id semestre.id %}" 
+           class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-200 hover:scale-105 shadow-md">
+            <i class="fas fa-plus mr-2"></i>
+            {% trans 'Agregar Materia' %}
+        </a>
+        <a href="{% url 'planes_estudio:semestre_list' plan.id %}" 
+           class="inline-flex items-center px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition-all duration-200">
+            <i class="fas fa-arrow-left mr-2"></i>
+            {% trans 'Volver a Semestres' %}
+        </a>
+    </div>
+</div>
+{% endblock %} 

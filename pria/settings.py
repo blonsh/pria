@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'docentes',
     'asistencia',
     'workcenter',
+    'planes_estudio',
 ]
 
 MIDDLEWARE = [
