@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - PRIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        <i class="fas fa-graduation-cap mr-3 text-primary"></i>
+                        {{ title }}
+                    </h1>
+                    <p class="mt-2 text-gray-600">Registra un nuevo alumno en un curso</p>
+                </div>
+                <a href="{% url 'core:matricula_list' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Volver
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="bg-white shadow rounded-lg">
+            <form method="post" class="p-6">
+                {% csrf_token %}
+                
+                <!-- Información del Alumno -->
+                <div class="border-b border-gray-200 pb-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">
+                        <i class="fas fa-user mr-2 text-primary"></i>
+                        Seleccionar Alumno
+                    </h3>
+                    
+                    <div>
+                        <label for="{{ form.alumno.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.alumno.label }} *
+                        </label>
+                        {{ form.alumno }}
+                        {% if form.alumno.errors %}
+                            <p class="mt-1 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ form.alumno.errors.0 }}
+                            </p>
+                        {% endif %}
+                        <p class="mt-1 text-sm text-gray-500">Selecciona el alumno que deseas matricular</p>
+                    </div>
+                </div>
+
+                <!-- Información del Curso -->
+                <div class="border-b border-gray-200 pb-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">
+                        <i class="fas fa-book mr-2 text-primary"></i>
+                        Seleccionar Curso
+                    </h3>
+                    
+                    <div>
+                        <label for="{{ form.curso.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.curso.label }} *
+                        </label>
+                        {{ form.curso }}
+                        {% if form.curso.errors %}
+                            <p class="mt-1 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ form.curso.errors.0 }}
+                            </p>
+                        {% endif %}
+                        <p class="mt-1 text-sm text-gray-500">Selecciona el curso en el que deseas matricular al alumno</p>
+                    </div>
+                </div>
+
+                <!-- Errores generales del formulario -->
+                {% if form.non_field_errors %}
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    Error en el formulario
+                                </h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Botones de acción -->
+                <div class="flex justify-end space-x-3 pt-6">
+                    <a href="{% url 'core:matricula_list' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        {{ submit_text }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">
+                        Información importante
+                    </h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Un alumno no puede matricularse dos veces en el mismo curso</li>
+                            <li>Solo se muestran cursos con cupo disponible</li>
+                            <li>La matrícula se registra automáticamente con la fecha actual</li>
+                            <li>Puedes cancelar la matrícula desde la lista de matrículas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Actualizar lista de cursos cuando se selecciona un alumno
+document.addEventListener('DOMContentLoaded', function() {
+    const alumnoSelect = document.getElementById('{{ form.alumno.id_for_label }}');
+    const cursoSelect = document.getElementById('{{ form.curso.id_for_label }}');
+    
+    if (alumnoSelect && cursoSelect) {
+        alumnoSelect.addEventListener('change', function() {
+            // Aquí podrías agregar lógica para filtrar cursos según el alumno
+            // Por ejemplo, mostrar solo cursos compatibles con el programa del alumno
+            console.log('Alumno seleccionado:', this.value);
+        });
+    }
+});
+</script>
+{% endblock %} 

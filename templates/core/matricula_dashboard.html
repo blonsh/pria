@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard de Matrículas - PRIA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        <i class="fas fa-graduation-cap mr-3 text-primary"></i>
+                        Dashboard de Matrículas
+                    </h1>
+                    <p class="mt-2 text-gray-600">Gestión y control de matrículas académicas</p>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{% url 'core:matricula_create' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <i class="fas fa-plus mr-2"></i>
+                        Nueva Matrícula
+                    </a>
+                    <a href="{% url 'core:matricula_list' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <i class="fas fa-list mr-2"></i>
+                        Ver Todas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Estadísticas principales -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users text-3xl text-primary"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Total de Matrículas
+                                </dt>
+                                <dd class="text-3xl font-bold text-gray-900">
+                                    {{ total_matriculas }}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-user-graduate text-3xl text-green-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Alumnos Registrados
+                                </dt>
+                                <dd class="text-3xl font-bold text-gray-900">
+                                    {{ total_alumnos }}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-book text-3xl text-blue-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    Cursos Disponibles
+                                </dt>
+                                <dd class="text-3xl font-bold text-gray-900">
+                                    {{ total_cursos }}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Últimas Matrículas -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        <i class="fas fa-clock mr-2 text-primary"></i>
+                        Últimas Matrículas
+                    </h3>
+                </div>
+                <div class="p-6">
+                    {% if ultimas_matriculas %}
+                        <div class="space-y-4">
+                            {% for matricula in ultimas_matriculas %}
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-user-circle text-2xl text-primary"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-900">
+                                                {{ matricula.alumno.user.first_name }} {{ matricula.alumno.user.last_name }}
+                                            </p>
+                                            <p class="text-sm text-gray-500">
+                                                {{ matricula.curso.materia.nombre }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-500">
+                                            {{ matricula.fecha_matricula|date:"d/m/Y" }}
+                                        </p>
+                                        <a href="{% url 'core:matricula_detail' matricula.pk %}" 
+                                           class="text-sm text-primary hover:text-primary-dark">
+                                            Ver detalles
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">No hay matrículas registradas</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Cursos con Más Demanda -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        <i class="fas fa-chart-line mr-2 text-primary"></i>
+                        Cursos con Más Demanda
+                    </h3>
+                </div>
+                <div class="p-6">
+                    {% if cursos_demanda %}
+                        <div class="space-y-4">
+                            {% for curso in cursos_demanda %}
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-book text-2xl text-blue-500"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-900">
+                                                {{ curso.materia.nombre }}
+                                            </p>
+                                            <p class="text-sm text-gray-500">
+                                                {{ curso.materia.codigo }} - {{ curso.anio_academico }}-{{ curso.semestre }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ curso.matriculados }} matriculados
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            Cupo: {{ curso.cupo_maximo }}
+                                        </p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-chart-bar text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">No hay datos de demanda disponibles</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Matrículas por Curso -->
+        {% if matriculas_por_curso %}
+            <div class="mt-8 bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        <i class="fas fa-chart-pie mr-2 text-primary"></i>
+                        Matrículas por Curso
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for curso in matriculas_por_curso %}
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ curso.curso__materia__nombre }}
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ curso.count }} matriculados
+                                        </p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                            <span class="text-white font-bold text-sm">{{ curso.count }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

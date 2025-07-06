@@ -161,7 +161,112 @@ class Matricula(models.Model):
     def __str__(self):
         return f"{self.alumno.user.first_name} {self.alumno.user.last_name} - {self.curso}"
 
+class EducationalLevel(models.Model):
+    """
+    Modelo que representa niveles educativos: Maternal, Preescolar, Primaria, etc.
+    """
+    nombre = models.CharField(_('nombre'), max_length=100)
+    orden = models.IntegerField(_('orden'), default=0, help_text=_("Para ordenar en listas"))
+    activo = models.BooleanField(_('activo'), default=True)
+    es_nivel_superior = models.BooleanField(_('es nivel superior'), default=False, 
+                                          help_text=_("Para diferenciar niveles universitarios"))
+    
+    class Meta:
+        verbose_name = _('nivel educativo')
+        verbose_name_plural = _('niveles educativos')
+        ordering = ['orden', 'nombre']
+        
+    def __str__(self):
+        return self.nombre
+
+class AcademicProgram(models.Model):
+    """
+    Modelo que representa programas académicos flexibles para cualquier nivel educativo.
+    """
+    nombre = models.CharField(_('nombre'), max_length=150)
+    nivel_educativo = models.ForeignKey(
+        EducationalLevel,
+        verbose_name=_('nivel educativo'),
+        on_delete=models.PROTECT,
+        related_name='programas'
+    )
+    descripcion = models.TextField(_('descripción'), blank=True, null=True)
+    duracion = models.CharField(_('duración'), max_length=50, blank=True, 
+                               help_text=_("Ejemplo: '3 años', '1 semestre', '4 semanas'"))
+    es_temporal = models.BooleanField(_('es temporal'), default=False, 
+                                    help_text=_("¿Es un curso temporal como un curso de verano?"))
+    activo = models.BooleanField(_('activo'), default=True)
+    
+    class Meta:
+        verbose_name = _('programa académico')
+        verbose_name_plural = _('programas académicos')
+        unique_together = ('nombre', 'nivel_educativo')
+        ordering = ['nivel_educativo__orden', 'nombre']
+        
+    def __str__(self):
+        return f"{self.nombre} ({self.nivel_educativo.nombre})"
+
 # Agregando tipos de usuario a User
 User.add_to_class('TIPO_DOCENTE', 'docente')
 User.add_to_class('TIPO_ALUMNO', 'alumno')
 User.add_to_class('TIPO_ADMIN', 'admin')
+
+class Catalogo(models.Model):
+    """
+    Modelo que representa un catálogo de datos.
+    Permite crear listas de valores para diferentes campos del sistema.
+    """
+    nombre = models.CharField(_('nombre'), max_length=100, unique=True)
+    descripcion = models.TextField(_('descripción'), blank=True)
+    activo = models.BooleanField(_('activo'), default=True)
+    fecha_creacion = models.DateTimeField(_('fecha de creación'), auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(_('fecha de actualización'), auto_now=True)
+    
+    class Meta:
+        verbose_name = _('catálogo')
+        verbose_name_plural = _('catálogos')
+        ordering = ['nombre']
+        
+    def __str__(self):
+        return self.nombre
+
+class CatalogoItem(models.Model):
+    """
+    Modelo que representa un elemento de un catálogo.
+    """
+    catalogo = models.ForeignKey(
+        Catalogo,
+        verbose_name=_('catálogo'),
+        on_delete=models.CASCADE,
+        related_name='items'
+    )
+    valor = models.CharField(_('valor'), max_length=100)
+    descripcion = models.CharField(_('descripción'), max_length=255, blank=True)
+    orden = models.IntegerField(_('orden'), default=0, help_text=_("Para ordenar en listas"))
+    activo = models.BooleanField(_('activo'), default=True)
+    
+    class Meta:
+        verbose_name = _('elemento de catálogo')
+        verbose_name_plural = _('elementos de catálogo')
+        unique_together = ('catalogo', 'valor')
+        ordering = ['catalogo', 'orden', 'valor']
+        
+    def __str__(self):
+        return f"{self.catalogo.nombre}: {self.valor}"
+
+class Genero(models.Model):
+    """
+    Modelo que representa los géneros disponibles.
+    """
+    nombre = models.CharField(_('nombre'), max_length=50, unique=True)
+    descripcion = models.CharField(_('descripción'), max_length=255, blank=True)
+    activo = models.BooleanField(_('activo'), default=True)
+    orden = models.IntegerField(_('orden'), default=0)
+    
+    class Meta:
+        verbose_name = _('género')
+        verbose_name_plural = _('géneros')
+        ordering = ['orden', 'nombre']
+        
+    def __str__(self):
+        return self.nombre
