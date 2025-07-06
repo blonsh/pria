@@ -20,4 +20,10 @@ urlpatterns = [
     path('asistencia/', include('asistencia.urls', namespace='asistencia')),
     path('alumnos/', include('alumnos.urls', namespace='alumnos')),
     path('docentes/', include('docentes.urls', namespace='docentes')),
+    # Matrículas
+    path('matriculas/', views.matricula_dashboard, name='matricula_dashboard'),
+    path('matriculas/list/', views.matricula_list, name='matricula_list'),
+    path('matriculas/create/', views.matricula_create, name='matricula_create'),
+    path('matriculas/<int:pk>/', views.matricula_detail, name='matricula_detail'),
+    path('matriculas/<int:pk>/delete/', views.matricula_delete, name='matricula_delete'),
 ]
