@@ -270,3 +270,83 @@ class Genero(models.Model):
         
     def __str__(self):
         return self.nombre
+
+class ActivityLog(models.Model):
+    """
+    Modelo para registrar todas las actividades de los usuarios en el sistema.
+    """
+    ACTION_CHOICES = [
+        ('CREATE', 'Crear'),
+        ('UPDATE', 'Actualizar'),
+        ('DELETE', 'Eliminar'),
+        ('LOGIN', 'Iniciar Sesión'),
+        ('LOGOUT', 'Cerrar Sesión'),
+        ('VIEW', 'Ver'),
+        ('EXPORT', 'Exportar'),
+        ('IMPORT', 'Importar'),
+        ('DOWNLOAD', 'Descargar'),
+        ('UPLOAD', 'Subir'),
+        ('APPROVE', 'Aprobar'),
+        ('REJECT', 'Rechazar'),
+        ('ASSIGN', 'Asignar'),
+        ('UNASSIGN', 'Desasignar'),
+    ]
+    
+    MODULE_CHOICES = [
+        ('USERS', 'Usuarios'),
+        ('ALUMNOS', 'Alumnos'),
+        ('DOCENTES', 'Docentes'),
+        ('ASISTENCIA', 'Asistencia'),
+        ('PLANES_ESTUDIO', 'Planes de Estudio'),
+        ('WORKCENTER', 'Centro de Trabajo'),
+        ('MATRICULAS', 'Matrículas'),
+        ('REPORTES', 'Reportes'),
+        ('CONTROL_ESCOLAR', 'Control Escolar'),
+        ('SYSTEM', 'Sistema'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES, verbose_name='Acción')
+    module = models.CharField(max_length=20, choices=MODULE_CHOICES, verbose_name='Módulo')
+    object_type = models.CharField(max_length=100, verbose_name='Tipo de Objeto')
+    object_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='ID del Objeto')
+    object_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Nombre del Objeto')
+    description = models.TextField(verbose_name='Descripción')
+    ip_address = models.GenericIPAddressField(blank=True, null=True, verbose_name='Dirección IP')
+    user_agent = models.TextField(blank=True, null=True, verbose_name='User Agent')
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Fecha y Hora')
+    additional_data = models.JSONField(blank=True, null=True, verbose_name='Datos Adicionales')
+    
+    class Meta:
+        verbose_name = 'Log de Actividad'
+        verbose_name_plural = 'Logs de Actividades'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['user', 'timestamp']),
+            models.Index(fields=['action', 'timestamp']),
+            models.Index(fields=['module', 'timestamp']),
+            models.Index(fields=['timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_action_display()} - {self.get_module_display()} - {self.timestamp}"
+    
+    @classmethod
+    def log_activity(cls, user, action, module, object_type, description, 
+                     object_id=None, object_name=None, ip_address=None, 
+                     user_agent=None, additional_data=None):
+        """
+        Método de clase para registrar una actividad de forma fácil.
+        """
+        return cls.objects.create(
+            user=user,
+            action=action,
+            module=module,
+            object_type=object_type,
+            object_id=object_id,
+            object_name=object_name,
+            description=description,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            additional_data=additional_data
+        )

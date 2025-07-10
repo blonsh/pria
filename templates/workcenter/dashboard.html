@@ -204,7 +204,7 @@
     <!-- Acciones rápidas -->
     <div class="mt-8 bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
             <a href="{% url 'workcenter:workcenter_create' %}" 
                class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors text-center">
                 <i class="fas fa-building text-2xl mb-2"></i>
@@ -234,6 +234,12 @@
                 <i class="fas fa-clock text-2xl mb-2"></i>
                 <div class="font-semibold">Nuevo Periodo</div>
                 <div class="text-sm opacity-90">Definir periodo</div>
+            </a>
+            <a href="{% url 'workcenter:control_escolar_dashboard' %}" 
+               class="bg-teal-600 text-white p-4 rounded-lg hover:bg-teal-700 transition-colors text-center">
+                <i class="fas fa-graduation-cap text-2xl mb-2"></i>
+                <div class="font-semibold">Control Escolar</div>
+                <div class="text-sm opacity-90">Gestión académica</div>
             </a>
         </div>
     </div>

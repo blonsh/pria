@@ -9,49 +9,177 @@
         <p class="text-gray-600 mb-6">
             Plataforma de Registro e Información Académica
         </p>
-        <div class="mt-6">
-            <a href="{% url 'users:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors mr-4">
-                Gestión de Usuarios
+        <div class="mt-6 flex flex-wrap gap-3">
+            <a href="{% url 'users:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                <i class="fas fa-users mr-2"></i>Gestión de Usuarios
             </a>
             <a href="{% url 'workcenter:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                Gestión del Centro de Trabajo
+                <i class="fas fa-building mr-2"></i>Centro de Trabajo
+            </a>
+            <a href="{% url 'workcenter:control_escolar_dashboard' %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors">
+                <i class="fas fa-graduation-cap mr-2"></i>Control Escolar
+            </a>
+            <a href="{% url 'planes_estudio:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                <i class="fas fa-book mr-2"></i>Planes de Estudio
             </a>
         </div>
     </div>
 
     <!-- Tarjetas de información -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Tarjeta de Usuarios -->
         <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-primary mb-4">Gestión de Usuarios</h2>
-            <p class="text-gray-600 mb-6">
+            <div class="text-center mb-4">
+                <i class="fas fa-users text-3xl text-blue-600 mb-2"></i>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-4 text-center">Gestión de Usuarios</h2>
+            <p class="text-gray-600 mb-6 text-center">
                 Gestiona los usuarios y roles del sistema
             </p>
-            <a href="{% url 'users:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+            <a href="{% url 'users:dashboard' %}" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-center block">
                 Ir a Gestión de Usuarios
             </a>
         </div>
 
         <!-- Tarjeta de Centro de Trabajo -->
         <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-primary mb-4">Centro de Trabajo</h2>
-            <p class="text-gray-600 mb-6">
+            <div class="text-center mb-4">
+                <i class="fas fa-building text-3xl text-green-600 mb-2"></i>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-4 text-center">Centro de Trabajo</h2>
+            <p class="text-gray-600 mb-6 text-center">
                 Gestiona los recursos del centro educativo
             </p>
-            <a href="{% url 'workcenter:dashboard' %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+            <a href="{% url 'workcenter:dashboard' %}" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-center block">
                 Ir a Centro de Trabajo
             </a>
         </div>
 
-        <!-- Tarjeta de Ayuda -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-primary mb-4">Ayuda y Documentación</h2>
-            <p class="text-gray-600 mb-6">
-                Encuentra guías y documentación
+        <!-- Tarjeta de Control Escolar -->
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-indigo-200">
+            <div class="text-center mb-4">
+                <i class="fas fa-graduation-cap text-3xl text-indigo-600 mb-2"></i>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-4 text-center">Control Escolar</h2>
+            <p class="text-gray-600 mb-6 text-center">
+                Gestión académica, alumnos, asistencia y kardex
             </p>
-            <a href="#" class="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
-                Ver Documentación
+            <a href="{% url 'workcenter:control_escolar_dashboard' %}" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors text-center block">
+                Ir a Control Escolar
             </a>
+        </div>
+
+        <!-- Tarjeta de Planes de Estudio -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-center mb-4">
+                <i class="fas fa-book text-3xl text-purple-600 mb-2"></i>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-4 text-center">Planes de Estudio</h2>
+            <p class="text-gray-600 mb-6 text-center">
+                Gestiona materias y planes académicos
+            </p>
+            <a href="{% url 'planes_estudio:dashboard' %}" class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors text-center block">
+                Ir a Planes de Estudio
+            </a>
+        </div>
+    </div>
+
+    <!-- Acceso rápido a funcionalidades -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Acceso Rápido</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Alumnos -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-graduate text-3xl text-orange-600 mb-2"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 text-center">Gestión de Alumnos</h3>
+                <p class="text-gray-600 mb-6 text-center">
+                    Administra la información de estudiantes
+                </p>
+                <a href="{% url 'alumnos:alumno_list' %}" class="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors text-center block">
+                    <i class="fas fa-users mr-2"></i>Gestionar Alumnos
+                </a>
+            </div>
+
+            <!-- Asistencia -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-clipboard-check text-3xl text-teal-600 mb-2"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 text-center">Control de Asistencia</h3>
+                <p class="text-gray-600 mb-6 text-center">
+                    Registra y controla la asistencia diaria
+                </p>
+                <a href="{% url 'asistencia:registrar_asistencia' %}" class="w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors text-center block">
+                    <i class="fas fa-clipboard-check mr-2"></i>Registrar Asistencia
+                </a>
+            </div>
+
+            <!-- Kardex -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-search text-3xl text-indigo-600 mb-2"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 text-center">Consulta de Kardex</h3>
+                <p class="text-gray-600 mb-6 text-center">
+                    Consulta el historial académico completo
+                </p>
+                <a href="{% url 'workcenter:kardex' %}" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors text-center block">
+                    <i class="fas fa-search mr-2"></i>Consultar Kardex
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Información del Sistema</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Documentación -->
+                <div class="text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-book-open text-4xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Documentación</h3>
+                    <p class="text-gray-600 mb-4">
+                        Guías y manuales de uso del sistema
+                    </p>
+                    <a href="#" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Ver Documentación
+                    </a>
+                </div>
+
+                <!-- Soporte -->
+                <div class="text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-headset text-4xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Soporte Técnico</h3>
+                    <p class="text-gray-600 mb-4">
+                        Ayuda y asistencia técnica
+                    </p>
+                    <a href="#" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
+                        Contactar Soporte
+                    </a>
+                </div>
+
+                <!-- Estado del Sistema -->
+                <div class="text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-server text-4xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Estado del Sistema</h3>
+                    <p class="text-gray-600 mb-4">
+                        Información sobre el estado actual
+                    </p>
+                    <span class="inline-block bg-green-100 text-green-800 px-4 py-2 rounded">
+                        <i class="fas fa-check-circle mr-2"></i>Operativo
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

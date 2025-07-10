@@ -21,4 +21,7 @@ urlpatterns = [
     path('cycle-config/', views.cycle_config_list, name='cycle_config_list'),
     path('cycle-config/<int:work_center_id>/', views.cycle_config_update, name='cycle_config_update'),
     path('cycle-config/<int:work_center_id>/activation/', views.cycle_activation_management, name='cycle_activation_management'),
+    # Control Escolar
+    path('control-escolar/', views.control_escolar_dashboard, name='control_escolar_dashboard'),
+    path('control-escolar/kardex/', views.kardex_view, name='kardex'),
 ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Carrera, Materia, Docente, Alumno, Curso, Matricula, EducationalLevel, AcademicProgram, Catalogo, CatalogoItem, Genero
+from .models import UserProfile, Carrera, Materia, Docente, Alumno, Curso, Matricula, EducationalLevel, AcademicProgram, Catalogo, CatalogoItem, Genero, ActivityLog
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -89,4 +89,23 @@ class GeneroAdmin(admin.ModelAdmin):
     list_filter = ('activo',)
     search_fields = ('nombre', 'descripcion')
     ordering = ('orden', 'nombre')
-    list_editable = ('orden', 'activo') 
+    list_editable = ('orden', 'activo')
+
+@admin.register(ActivityLog)
+class ActivityLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'action', 'module', 'object_type', 'timestamp', 'ip_address')
+    list_filter = ('action', 'module', 'timestamp', 'user')
+    search_fields = ('user__username', 'description', 'object_name', 'ip_address')
+    readonly_fields = ('user', 'action', 'module', 'object_type', 'object_id', 'object_name',
+                      'description', 'ip_address', 'user_agent', 'timestamp', 'additional_data')
+    date_hierarchy = 'timestamp'
+    ordering = ('-timestamp',)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser 

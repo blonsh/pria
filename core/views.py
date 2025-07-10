@@ -9,7 +9,9 @@ from core.forms import UserRegistrationForm, AlumnoRegistrationForm, DocenteRegi
 from django.contrib.auth.models import Group, User
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
-from .models import UserProfile, Carrera, Materia, Docente, Alumno, Curso, Matricula
+from .models import UserProfile, Carrera, Materia, Docente, Alumno, Curso, Matricula, ActivityLog
+from django.utils import timezone
+from datetime import timedelta
 
 def login_view(request):
     """Vista para iniciar sesión."""
@@ -205,3 +207,135 @@ def matricula_dashboard(request):
         'cursos_demanda': cursos_demanda,
     }
     return render(request, 'core/matricula_dashboard.html', context)
+
+@login_required
+def reportes_dashboard(request):
+    """
+    Dashboard principal de reportes del sistema.
+    Proporciona acceso a todos los reportes disponibles.
+    """
+    # Estadísticas generales para el dashboard
+    total_usuarios = User.objects.count()
+    total_alumnos = Alumno.objects.count()
+    total_docentes = Docente.objects.count()
+    total_matriculas = Matricula.objects.count()
+    
+    # Estadísticas de asistencia (si el modelo existe)
+    try:
+        from asistencia.models import Asistencia
+        total_asistencias = Asistencia.objects.count()
+    except ImportError:
+        total_asistencias = 0
+    
+    # Estadísticas de planes de estudio (si el modelo existe)
+    try:
+        from planes_estudio.models import PlanEstudio
+        total_planes = PlanEstudio.objects.count()
+        planes_activos = PlanEstudio.objects.filter(estado='ACTIVO').count()
+    except ImportError:
+        total_planes = 0
+        planes_activos = 0
+    
+    # Estadísticas de centros de trabajo (si el modelo existe)
+    try:
+        from workcenter.models import WorkCenter
+        total_workcenters = WorkCenter.objects.count()
+    except ImportError:
+        total_workcenters = 0
+    
+    context = {
+        'total_usuarios': total_usuarios,
+        'total_alumnos': total_alumnos,
+        'total_docentes': total_docentes,
+        'total_matriculas': total_matriculas,
+        'total_asistencias': total_asistencias,
+        'total_planes': total_planes,
+        'planes_activos': planes_activos,
+        'total_workcenters': total_workcenters,
+    }
+    
+    return render(request, 'core/reportes_dashboard.html', context)
+
+@login_required
+def logs_dashboard(request):
+    """
+    Dashboard para consultar logs de actividades de los usuarios.
+    Permite filtrar por fecha, usuario, acción y módulo.
+    """
+    # Obtener parámetros de filtro
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+    usuario = request.GET.get('usuario')
+    accion = request.GET.get('accion')
+    modulo = request.GET.get('modulo')
+    search = request.GET.get('search')
+    
+    # Query base
+    logs = ActivityLog.objects.select_related('user').all()
+    
+    # Aplicar filtros
+    if fecha_inicio:
+        logs = logs.filter(timestamp__date__gte=fecha_inicio)
+    if fecha_fin:
+        logs = logs.filter(timestamp__date__lte=fecha_fin)
+    if usuario:
+        logs = logs.filter(user__username__icontains=usuario)
+    if accion:
+        logs = logs.filter(action=accion)
+    if modulo:
+        logs = logs.filter(module=modulo)
+    if search:
+        logs = logs.filter(
+            Q(description__icontains=search) |
+            Q(object_name__icontains=search) |
+            Q(object_type__icontains=search)
+        )
+    
+    # Estadísticas
+    total_logs = logs.count()
+    logs_hoy = ActivityLog.objects.filter(timestamp__date=timezone.now().date()).count()
+    logs_semana = ActivityLog.objects.filter(
+        timestamp__date__gte=timezone.now().date() - timedelta(days=7)
+    ).count()
+    
+    # Logs por acción
+    logs_por_accion = logs.values('action').annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]
+    
+    # Logs por módulo
+    logs_por_modulo = logs.values('module').annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]
+    
+    # Usuarios más activos
+    usuarios_activos = logs.values('user__username').annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]
+    
+    # Paginación
+    paginator = Paginator(logs, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'logs': page_obj,
+        'total_logs': total_logs,
+        'logs_hoy': logs_hoy,
+        'logs_semana': logs_semana,
+        'logs_por_accion': logs_por_accion,
+        'logs_por_modulo': logs_por_modulo,
+        'usuarios_activos': usuarios_activos,
+        'filtros': {
+            'fecha_inicio': fecha_inicio,
+            'fecha_fin': fecha_fin,
+            'usuario': usuario,
+            'accion': accion,
+            'modulo': modulo,
+            'search': search,
+        },
+        'acciones': ActivityLog.ACTION_CHOICES,
+        'modulos': ActivityLog.MODULE_CHOICES,
+    }
+    
+    return render(request, 'core/logs_dashboard.html', context)

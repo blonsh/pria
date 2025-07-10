@@ -26,4 +26,8 @@ urlpatterns = [
     path('matriculas/create/', views.matricula_create, name='matricula_create'),
     path('matriculas/<int:pk>/', views.matricula_detail, name='matricula_detail'),
     path('matriculas/<int:pk>/delete/', views.matricula_delete, name='matricula_delete'),
+    # Reportes
+    path('reportes/', views.reportes_dashboard, name='reportes'),
+    # Logs de Actividad
+    path('logs/', views.logs_dashboard, name='logs'),
 ]

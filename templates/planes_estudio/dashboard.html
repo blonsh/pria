@@ -147,7 +147,7 @@
     </div>
 
     <!-- Planes recientes -->
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">
             <i class="fas fa-clock text-orange-600 mr-2"></i>
             Planes Recientes
@@ -222,6 +222,168 @@
             </a>
         </div>
         {% endif %}
+    </div>
+
+    <!-- Documentación -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-8">
+        <div class="text-center mb-8">
+            <i class="fas fa-book-open text-4xl text-blue-600 mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Documentación y Recursos</h2>
+            <p class="text-gray-600 text-lg">Guías, tutoriales y recursos para el manejo de planes de estudio</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Guías de Usuario -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-graduate text-3xl text-blue-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Guías de Usuario</h3>
+                    <p class="text-gray-600 text-sm mb-4">Manuales paso a paso para usar el sistema</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="{% url 'planes_estudio:documentacion' %}" 
+                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+                        <i class="fas fa-book mr-2"></i>
+                        Ver Guías
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                        <i class="fas fa-download mr-2"></i>
+                        Descargar PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tutoriales en Video -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-video text-3xl text-green-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Tutoriales en Video</h3>
+                    <p class="text-gray-600 text-sm mb-4">Videos explicativos de las funcionalidades</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200">
+                        <i class="fas fa-play mr-2"></i>
+                        Ver Tutoriales
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors duration-200">
+                        <i class="fas fa-youtube mr-2"></i>
+                        Canal YouTube
+                    </a>
+                </div>
+            </div>
+
+            <!-- FAQ y Soporte -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-question-circle text-3xl text-purple-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">FAQ y Soporte</h3>
+                    <p class="text-gray-600 text-sm mb-4">Preguntas frecuentes y ayuda técnica</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200">
+                        <i class="fas fa-question mr-2"></i>
+                        Ver FAQ
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-purple-600 text-purple-600 rounded-md hover:bg-purple-50 transition-colors duration-200">
+                        <i class="fas fa-headset mr-2"></i>
+                        Contactar Soporte
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recursos Académicos -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-graduation-cap text-3xl text-orange-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Recursos Académicos</h3>
+                    <p class="text-gray-600 text-sm mb-4">Plantillas y recursos para planes de estudio</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200">
+                        <i class="fas fa-file-alt mr-2"></i>
+                        Ver Plantillas
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-orange-600 text-orange-600 rounded-md hover:bg-orange-50 transition-colors duration-200">
+                        <i class="fas fa-download mr-2"></i>
+                        Descargar Recursos
+                    </a>
+                </div>
+            </div>
+
+            <!-- Normativas -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-balance-scale text-3xl text-red-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Normativas</h3>
+                    <p class="text-gray-600 text-sm mb-4">Reglamentos y normativas académicas</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200">
+                        <i class="fas fa-gavel mr-2"></i>
+                        Ver Normativas
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors duration-200">
+                        <i class="fas fa-file-pdf mr-2"></i>
+                        Descargar PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Comunidad -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <div class="text-center mb-4">
+                    <i class="fas fa-users text-3xl text-teal-600 mb-3"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Comunidad</h3>
+                    <p class="text-gray-600 text-sm mb-4">Foros y grupos de discusión</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors duration-200">
+                        <i class="fas fa-comments mr-2"></i>
+                        Ver Foros
+                    </a>
+                    <a href="#" 
+                       class="block w-full text-center px-4 py-2 border border-teal-600 text-teal-600 rounded-md hover:bg-teal-50 transition-colors duration-200">
+                        <i class="fas fa-slack mr-2"></i>
+                        Unirse al Slack
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de contacto -->
+        <div class="mt-8 text-center">
+            <div class="bg-white rounded-lg shadow-md p-6 inline-block">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">¿Necesitas ayuda?</h3>
+                <p class="text-gray-600 mb-4">Nuestro equipo de soporte está disponible para ayudarte</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="mailto:soporte@pria.edu" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+                        <i class="fas fa-envelope mr-2"></i>
+                        Enviar Email
+                    </a>
+                    <a href="tel:+1234567890" 
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200">
+                        <i class="fas fa-phone mr-2"></i>
+                        Llamar
+                    </a>
+                    <a href="#" 
+                       class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200">
+                        <i class="fas fa-comments mr-2"></i>
+                        Chat en Vivo
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 

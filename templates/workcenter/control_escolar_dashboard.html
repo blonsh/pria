@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% block title %}Control Escolar - PRIA{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-graduation-cap text-indigo-600 mr-3"></i>
+                    Control Escolar
+                </h1>
+                <p class="text-gray-600">Gestión académica y administrativa de estudiantes</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'workcenter:kardex' %}" 
+                   class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                    <i class="fas fa-search mr-2"></i>Consultar Kardex
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-indigo-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-indigo-600">{{ total_workcenters }}</div>
+            <div class="text-sm text-gray-600">Centros de Trabajo</div>
+        </div>
+        <div class="bg-green-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-green-600">{{ total_alumnos }}</div>
+            <div class="text-sm text-gray-600">Alumnos Registrados</div>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-purple-600">{{ total_ciclos_activos }}</div>
+            <div class="text-sm text-gray-600">Ciclos Activos</div>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-6 text-center">
+            <div class="text-3xl font-bold text-orange-600">0</div>
+            <div class="text-sm text-gray-600">Registros de Asistencia</div>
+        </div>
+    </div>
+
+    <!-- Funcionalidades principales -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Kardex -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        <i class="fas fa-search text-indigo-600 mr-2"></i>
+                        Consulta de Kardex
+                    </h2>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        Disponible
+                    </span>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Consulta el historial académico completo de los estudiantes, incluyendo calificaciones, 
+                    materias aprobadas y reprobadas, promedios y progreso académico.
+                </p>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Búsqueda por nombre, número de cuenta o programa
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Filtros por centro de trabajo y ciclo escolar
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Reportes detallados de rendimiento académico
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="{% url 'workcenter:kardex' %}" 
+                       class="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors text-center block">
+                        <i class="fas fa-search mr-2"></i>Consultar Kardex
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestión de Alumnos -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        <i class="fas fa-users text-green-600 mr-2"></i>
+                        Gestión de Alumnos
+                    </h2>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        Disponible
+                    </span>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Administra la información de los estudiantes, incluyendo datos personales, 
+                    programas académicos y estados de matrícula.
+                </p>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Registro y actualización de datos de alumnos
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Asignación de programas académicos
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Control de estados de matrícula
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="{% url 'alumnos:alumno_list' %}" 
+                       class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors text-center block">
+                        <i class="fas fa-users mr-2"></i>Gestionar Alumnos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Módulos adicionales -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Módulos Adicionales</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Control de Asistencia -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-clipboard-check text-teal-600 mr-2"></i>
+                            Control de Asistencia
+                        </h3>
+                        <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Disponible
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Gestiona el control de asistencia de los estudiantes, genera reportes 
+                        y estadísticas de asistencia por grupo y materia.
+                    </p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Registro diario de asistencia
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Reportes de asistencia por periodo
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Estadísticas y gráficos de asistencia
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="{% url 'asistencia:registrar_asistencia' %}" 
+                           class="w-full bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors text-center block">
+                            <i class="fas fa-clipboard-check mr-2"></i>Registrar Asistencia
+                        </a>
+                        <a href="{% url 'asistencia:historial_asistencia' %}" 
+                           class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center block">
+                            <i class="fas fa-history mr-2"></i>Historial de Asistencia
+                        </a>
+                        <a href="{% url 'asistencia:estadisticas_asistencia' %}" 
+                           class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-center block">
+                            <i class="fas fa-chart-bar mr-2"></i>Estadísticas
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes Académicos -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-chart-line text-orange-600 mr-2"></i>
+                            Reportes Académicos
+                        </h3>
+                        <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Disponible
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Genera reportes académicos detallados, boletas de calificaciones 
+                        y certificados de estudios.
+                    </p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Boletas de calificaciones
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Certificados de estudios
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            Reportes de rendimiento académico
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="{% url 'asistencia:reporte_asistencia' %}" 
+                           class="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-center block">
+                            <i class="fas fa-file-alt mr-2"></i>Generar Reportes
+                        </a>
+                        <a href="#" 
+                           class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-center block">
+                            <i class="fas fa-certificate mr-2"></i>Certificados
+                        </a>
+                        <a href="#" 
+                           class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-center block">
+                            <i class="fas fa-chart-pie mr-2"></i>Estadísticas Generales
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Centros de Trabajo -->
+    <div class="mt-8">
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">
+                    <i class="fas fa-building text-blue-600 mr-2"></i>
+                    Centros de Trabajo
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                {% if work_centers %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for work_center in work_centers %}
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">{{ work_center.name }}</h3>
+                                    <p class="text-sm text-gray-600">{{ work_center.director_name }}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'workcenter:workcenter_detail' work_center.pk %}" 
+                                       class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-building text-4xl mb-4"></i>
+                        <p>No hay centros de trabajo registrados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

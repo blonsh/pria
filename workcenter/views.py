@@ -500,3 +500,95 @@ def schoolperiod_update(request, pk):
         'form': form,
         'title': 'Actualizar Periodo Escolar'
     })
+
+# Funciones de Control Escolar
+
+@login_required
+def control_escolar_dashboard(request):
+    """
+    Dashboard principal del módulo de Control Escolar.
+    Muestra estadísticas y enlaces rápidos a las funcionalidades de control escolar.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        HttpResponse: Renderiza el template control_escolar_dashboard.html
+    """
+    # Obtener estadísticas de control escolar
+    total_workcenters = WorkCenter.objects.count()
+    total_alumnos = 0  # Aquí podrías agregar la lógica para contar alumnos
+    total_ciclos_activos = SchoolCycle.objects.filter(is_active=True).count()
+    
+    # Obtener centros de trabajo con información de control escolar
+    work_centers = WorkCenter.objects.all().order_by('name')
+    
+    context = {
+        'total_workcenters': total_workcenters,
+        'total_alumnos': total_alumnos,
+        'total_ciclos_activos': total_ciclos_activos,
+        'work_centers': work_centers,
+    }
+    
+    return render(request, 'workcenter/control_escolar_dashboard.html', context)
+
+@login_required
+def kardex_view(request):
+    """
+    Vista principal del Kardex.
+    Permite consultar y gestionar el historial académico de los alumnos.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        HttpResponse: Renderiza el template kardex.html
+    """
+    # Obtener parámetros de búsqueda
+    search_query = request.GET.get('search', '')
+    work_center_id = request.GET.get('work_center', '')
+    ciclo_id = request.GET.get('ciclo', '')
+    
+    # Obtener centros de trabajo y ciclos para los filtros
+    work_centers = WorkCenter.objects.all().order_by('name')
+    ciclos = SchoolCycle.objects.filter(is_active=True).order_by('-start_date')
+    
+    # Aquí implementarías la lógica para obtener datos del kardex
+    # Por ahora, creamos datos de ejemplo
+    kardex_data = []
+    
+    # Si hay búsqueda, simular resultados
+    if search_query:
+        # Aquí agregarías la lógica real de búsqueda en la base de datos
+        kardex_data = [
+            {
+                'alumno': 'Juan Pérez',
+                'numero_cuenta': '24-01-00001',
+                'programa': 'Ingeniería en Sistemas',
+                'ciclo': '2024-2025',
+                'promedio': 8.5,
+                'materias_aprobadas': 45,
+                'materias_reprobadas': 2,
+            },
+            {
+                'alumno': 'María García',
+                'numero_cuenta': '24-01-00002',
+                'programa': 'Administración',
+                'ciclo': '2024-2025',
+                'promedio': 9.2,
+                'materias_aprobadas': 48,
+                'materias_reprobadas': 0,
+            }
+        ]
+    
+    context = {
+        'search_query': search_query,
+        'work_centers': work_centers,
+        'ciclos': ciclos,
+        'selected_work_center': work_center_id,
+        'selected_ciclo': ciclo_id,
+        'kardex_data': kardex_data,
+        'total_results': len(kardex_data),
+    }
+    
+    return render(request, 'workcenter/kardex.html', context)
